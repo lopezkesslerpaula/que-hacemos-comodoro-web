@@ -1,5 +1,5 @@
 'use client';
-
+// GitHub conectado con Vercel
 import { useMemo, useState } from 'react';
 
 type EventItem = {
