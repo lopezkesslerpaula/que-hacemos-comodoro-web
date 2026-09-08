@@ -6,6 +6,7 @@ import Link from 'next/link';
 export default function PublicarEventoPage() {
   const [enviado, setEnviado] = useState(false);
 const [tipoEntrada, setTipoEntrada] = useState('');
+  const [imagenPreview, setImagenPreview] = useState<string | null>(null);
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setEnviado(true);
@@ -221,7 +222,42 @@ const [tipoEntrada, setTipoEntrada] = useState('');
                     }}
                   />
                 </label>
+<label>
+  <div style={{ fontWeight: 700, marginBottom: 7 }}>
+    Imagen de portada
+  </div>
 
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      const archivo = e.target.files?.[0];
+
+      if (archivo) {
+        setImagenPreview(URL.createObjectURL(archivo));
+      }
+    }}
+    style={{
+      ...inputStyle,
+      padding: 10,
+      background: '#fff',
+    }}
+  />
+
+  {imagenPreview && (
+    <img
+      src={imagenPreview}
+      alt="Vista previa del evento"
+      style={{
+        width: '100%',
+        height: 220,
+        objectFit: 'cover',
+        borderRadius: 14,
+        marginTop: 12,
+      }}
+    />
+  )}
+</label>
                 <button
                   type="submit"
                   style={{
