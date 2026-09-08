@@ -119,7 +119,7 @@ export default function HomePage() {
         <nav className="nav" aria-label="Navegación principal">
           <a href="#eventos">Eventos</a>
           <a href="#categorias">Categorías</a>
-          <a href="#publicar">Publicar</a>
+          <a href="/publicar">Publicar</a>
           <button className="navFavorite" type="button" title="Favoritos">♡ <span>{favorites.length}</span></button>
         </nav>
       </header>
