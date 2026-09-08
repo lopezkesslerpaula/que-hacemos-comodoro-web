@@ -2,15 +2,41 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { createClient } from '@supabase/supabase-js';
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+);
 
 export default function PublicarEventoPage() {
-  const [enviado, setEnviado] = useState(false);
 const [tipoEntrada, setTipoEntrada] = useState('');
   const [imagenPreview, setImagenPreview] = useState<string | null>(null);
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setEnviado(true);
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  event.preventDefault();
+
+  const form = new FormData(event.currentTarget);
+
+  const { error } = await supabase.from('events').insert({
+   title: form.get('titulo'),
+    category: form.get('categoria'),
+    event_date: form.get('fecha'),
+    event_time: form.get('hora'),
+    place: form.get('lugar'),
+    address: form.get('direccion'),
+    entry_type: form.get('entrada'),
+    price: form.get('precio') || null,
+    description: form.get('descripcion'),
+    status: 'PENDING_REVIEW'
+  });
+
+  if (error) {
+    console.error(error);
+    alert('No pudimos enviar el evento. Intentá nuevamente.');
+    return;
   }
+
+  setEnviado(true);
+}
 if (enviado) {
   return (
     <main
