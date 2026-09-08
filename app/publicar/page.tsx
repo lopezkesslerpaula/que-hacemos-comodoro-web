@@ -32,7 +32,7 @@ const [enviado, setEnviado] = useState(false);
 
   if (error) {
     console.error(error);
-    alert('No pudimos enviar el evento. Intentá nuevamente.');
+    alert(`Error Supabase: ${error.message}`);
     return;
   }
 
