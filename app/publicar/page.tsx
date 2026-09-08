@@ -9,7 +9,8 @@ const supabase = createClient(
 );
 
 export default function PublicarEventoPage() {
-const [tipoEntrada, setTipoEntrada] = useState('');
+const [enviado, setEnviado] = useState(false);
+  const [tipoEntrada, setTipoEntrada] = useState('');
   const [imagenPreview, setImagenPreview] = useState<string | null>(null);
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
   event.preventDefault();
