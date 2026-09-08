@@ -11,7 +11,76 @@ const [tipoEntrada, setTipoEntrada] = useState('');
     event.preventDefault();
     setEnviado(true);
   }
+if (enviado) {
+  return (
+    <main
+      style={{
+        minHeight: '100vh',
+        background: '#faf8ff',
+        padding: '40px 20px',
+        color: '#201733',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 560,
+          margin: '80px auto',
+          background: '#fff',
+          padding: 40,
+          borderRadius: 20,
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ fontSize: 54, marginBottom: 16 }}>✅</div>
 
+        <div
+          style={{
+            display: 'inline-block',
+            background: '#efe7ff',
+            color: '#6f32e8',
+            fontWeight: 800,
+            fontSize: 12,
+            padding: '7px 12px',
+            borderRadius: 999,
+            marginBottom: 16,
+          }}
+        >
+          PENDIENTE DE APROBACIÓN
+        </div>
+
+        <h1 style={{ fontSize: 32, margin: '0 0 12px' }}>
+          ¡Evento enviado!
+        </h1>
+
+        <p
+          style={{
+            lineHeight: 1.6,
+            color: '#655b75',
+            marginBottom: 28,
+          }}
+        >
+          Recibimos tu evento correctamente. Será revisado antes de
+          publicarse en Qué Hacemos Comodoro.
+        </p>
+
+        <Link
+          href="/"
+          style={{
+            display: 'inline-block',
+            background: '#6f32e8',
+            color: '#fff',
+            textDecoration: 'none',
+            fontWeight: 800,
+            padding: '14px 24px',
+            borderRadius: 12,
+          }}
+        >
+          Volver al inicio
+        </Link>
+      </div>
+    </main>
+  );
+}
   return (
     <main
       style={{
