@@ -182,12 +182,13 @@ const [tipoEntrada, setTipoEntrada] = useState('');
                   <div style={{ fontWeight: 700, marginBottom: 7 }}>
                     Tipo de entrada
                   </div>
-                  <select>
+<select
   required
   name="entrada"
   style={inputStyle}
   value={tipoEntrada}
   onChange={(e) => setTipoEntrada(e.target.value)}
+>
                     <option value="">Seleccionar</option>
                     <option>Gratis</option>
                     <option>Paga</option>
