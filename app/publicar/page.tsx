@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function PublicarEventoPage() {
   const [enviado, setEnviado] = useState(false);
-
+const [tipoEntrada, setTipoEntrada] = useState('');
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setEnviado(true);
@@ -182,12 +182,27 @@ export default function PublicarEventoPage() {
                   <div style={{ fontWeight: 700, marginBottom: 7 }}>
                     Tipo de entrada
                   </div>
-                  <select required name="entrada" style={inputStyle}>
+                  <select>
+  required
+  name="entrada"
+  style={inputStyle}
+  value={tipoEntrada}
+  onChange={(e) => setTipoEntrada(e.target.value)}
                     <option value="">Seleccionar</option>
                     <option>Gratis</option>
                     <option>Paga</option>
                     <option>Consultar</option>
                   </select>
+                  {tipoEntrada === 'Paga' && (
+  <input
+    required
+    type="number"
+    name="precio"
+    min="0"
+    placeholder="Precio de la entrada ($)"
+    style={{ ...inputStyle, marginTop: 10 }}
+  />
+)}
                 </label>
 
                 <label>
