@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-
+import { createClient } from '@supabase/supabase-js';
 function getAdminToken() {
   const password = process.env.ADMIN_ACCESS_PASSWORD;
 
@@ -56,6 +56,26 @@ export default async function AdminPage({
     cookieStore.get('qhc_admin_session')?.value === getAdminToken();
 
   if (authenticated) {
+      const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SECRET_KEY!,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+      }
+    );
+
+    const { data: pendingEvents, error: eventsError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('status', 'PENDING_REVIEW')
+      .order('created_at', { ascending: false });
+
+    if (eventsError) {
+      console.error('Error cargando eventos pendientes:', eventsError);
+    }
     return (
       <main
         style={{
@@ -116,23 +136,101 @@ export default async function AdminPage({
               boxShadow: '0 16px 45px rgba(70, 42, 120, 0.08)',
             }}
           >
-            <div style={{ fontSize: 42, marginBottom: 12 }}>📋</div>
+           <div style={{ fontSize: 42, marginBottom: 12 }}>📋</div>
 
-            <h2 style={{ margin: '0 0 10px' }}>
-              Eventos pendientes
-            </h2>
+<h2 style={{ margin: '0 0 10px' }}>
+  Eventos pendientes ({pendingEvents?.length ?? 0})
+</h2>
 
-            <p
-              style={{
-                margin: 0,
-                color: '#6f657f',
-                lineHeight: 1.6,
-              }}
-            >
-              Acceso de administradora correcto. En el siguiente paso
-              conectaremos acá los eventos PENDING_REVIEW guardados en
-              Supabase.
-            </p>
+<p
+  style={{
+    margin: '0 0 24px',
+    color: '#6f657f',
+    lineHeight: 1.6,
+  }}
+>
+  Revisá los eventos enviados antes de publicarlos.
+</p>
+
+{!pendingEvents || pendingEvents.length === 0 ? (
+  <div
+    style={{
+      padding: 24,
+      background: '#faf8ff',
+      borderRadius: 14,
+      color: '#6f657f',
+    }}
+  >
+    No hay eventos pendientes de aprobación.
+  </div>
+) : (
+  <div style={{ display: 'grid', gap: 14 }}>
+    {pendingEvents.map((event) => (
+      <div
+        key={event.id}
+        style={{
+          border: '1px solid #e8e0f2',
+          borderRadius: 16,
+          padding: 20,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: 20,
+        }}
+      >
+        <div>
+          <span
+            style={{
+              display: 'inline-block',
+              background: '#eee5ff',
+              color: '#6f32e8',
+              padding: '5px 9px',
+              borderRadius: 999,
+              fontSize: 11,
+              fontWeight: 800,
+              marginBottom: 10,
+            }}
+          >
+            PENDIENTE
+          </span>
+
+          <h3 style={{ margin: '0 0 8px', fontSize: 20 }}>
+            {event.title}
+          </h3>
+
+          <div
+            style={{
+              color: '#6f657f',
+              fontSize: 14,
+              lineHeight: 1.6,
+            }}
+          >
+            <div>
+              {event.category} · {event.event_date} · {event.event_time}
+            </div>
+            <div>{event.place}</div>
+          </div>
+        </div>
+
+        <a
+          href={`/admin/eventos/${event.id}`}
+          style={{
+            flexShrink: 0,
+            background: '#6f32e8',
+            color: '#fff',
+            textDecoration: 'none',
+            padding: '11px 16px',
+            borderRadius: 10,
+            fontWeight: 800,
+            fontSize: 14,
+          }}
+        >
+          Ver evento →
+        </a>
+      </div>
+    ))}
+  </div>
+)}
           </section>
         </div>
       </main>
