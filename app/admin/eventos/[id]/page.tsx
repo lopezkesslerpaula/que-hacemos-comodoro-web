@@ -3,7 +3,42 @@ import { cookies } from 'next/headers';
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
+async function approveEvent(formData: FormData) {
+  'use server';
 
+  const eventId = String(formData.get('eventId') ?? '');
+
+  const cookieStore = await cookies();
+  const authenticated =
+    cookieStore.get('qhc_admin_session')?.value === getAdminToken();
+
+  if (!authenticated || !eventId) {
+    redirect('/admin');
+  }
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SECRET_KEY!,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    }
+  );
+
+  const { error } = await supabase
+    .from('events')
+    .update({ status: 'PUBLISHED' })
+    .eq('id', eventId)
+    .eq('status', 'PENDING_REVIEW');
+
+  if (error) {
+    throw new Error(`No se pudo aprobar el evento: ${error.message}`);
+  }
+
+  redirect('/admin');
+}
 function getAdminToken() {
   const password = process.env.ADMIN_ACCESS_PASSWORD;
 
@@ -197,18 +232,25 @@ export default async function AdminEventPage({
             <h2 style={{ margin: '0 0 14px', fontSize: 20 }}>
               Revisión administrativa
             </h2>
+<form action={approveEvent}>
+  <input type="hidden" name="eventId" value={event.id} />
 
-            <p
-              style={{
-                margin: 0,
-                color: '#6f657f',
-                lineHeight: 1.6,
-              }}
-            >
-              En el próximo paso agregaremos acá los botones
-              <strong> Aprobar</strong>, <strong>Pedir cambios</strong> y
-              <strong> Rechazar</strong>.
-            </p>
+  <button
+    type="submit"
+    style={{
+      border: 0,
+      borderRadius: 12,
+      background: '#6f32e8',
+      color: '#fff',
+      padding: '14px 22px',
+      fontSize: 15,
+      fontWeight: 800,
+      cursor: 'pointer',
+    }}
+  >
+    Aprobar evento
+  </button>
+</form>
           </div>
         </div>
       </div>
