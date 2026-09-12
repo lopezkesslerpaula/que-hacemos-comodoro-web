@@ -39,6 +39,78 @@ async function approveEvent(formData: FormData) {
 
   redirect('/admin');
 }
+async function rejectEvent(formData: FormData) {
+  'use server';
+
+  const eventId = String(formData.get('eventId') ?? '');
+
+  const cookieStore = await cookies();
+  const authenticated =
+    cookieStore.get('qhc_admin_session')?.value === getAdminToken();
+
+  if (!authenticated || !eventId) {
+    redirect('/admin');
+  }
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SECRET_KEY!,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    }
+  );
+
+  const { error } = await supabase
+    .from('events')
+    .update({ status: 'REJECTED' })
+    .eq('id', eventId)
+    .eq('status', 'PENDING_REVIEW');
+
+  if (error) {
+    throw new Error(`No se pudo rechazar el evento: ${error.message}`);
+  }
+
+  redirect('/admin');
+}
+async function requestChangesEvent(formData: FormData) {
+  'use server';
+
+  const eventId = String(formData.get('eventId') ?? '');
+
+  const cookieStore = await cookies();
+  const authenticated =
+    cookieStore.get('qhc_admin_session')?.value === getAdminToken();
+
+  if (!authenticated || !eventId) {
+    redirect('/admin');
+  }
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SECRET_KEY!,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    }
+  );
+
+  const { error } = await supabase
+    .from('events')
+    .update({ status: 'CHANGES_REQUESTED' })
+    .eq('id', eventId)
+    .eq('status', 'PENDING_REVIEW');
+
+  if (error) {
+    throw new Error(`No se pudieron pedir cambios: ${error.message}`);
+  }
+
+  redirect('/admin');
+}
 function getAdminToken() {
   const password = process.env.ADMIN_ACCESS_PASSWORD;
 
@@ -232,25 +304,73 @@ export default async function AdminEventPage({
             <h2 style={{ margin: '0 0 14px', fontSize: 20 }}>
               Revisión administrativa
             </h2>
-<form action={approveEvent}>
-  <input type="hidden" name="eventId" value={event.id} />
+<div
+  style={{
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 12,
+  }}
+>
+  <form action={approveEvent}>
+    <input type="hidden" name="eventId" value={event.id} />
 
-  <button
-    type="submit"
-    style={{
-      border: 0,
-      borderRadius: 12,
-      background: '#6f32e8',
-      color: '#fff',
-      padding: '14px 22px',
-      fontSize: 15,
-      fontWeight: 800,
-      cursor: 'pointer',
-    }}
-  >
-    Aprobar evento
-  </button>
-</form>
+    <button
+      type="submit"
+      style={{
+        border: 0,
+        borderRadius: 12,
+        background: '#6f32e8',
+        color: '#fff',
+        padding: '14px 22px',
+        fontSize: 15,
+        fontWeight: 800,
+        cursor: 'pointer',
+      }}
+    >
+      Aprobar evento
+    </button>
+  </form>
+
+  <form action={requestChangesEvent}>
+    <input type="hidden" name="eventId" value={event.id} />
+
+    <button
+      type="submit"
+      style={{
+        border: '1px solid #6f32e8',
+        borderRadius: 12,
+        background: '#fff',
+        color: '#6f32e8',
+        padding: '14px 22px',
+        fontSize: 15,
+        fontWeight: 800,
+        cursor: 'pointer',
+      }}
+    >
+      Pedir cambios
+    </button>
+  </form>
+
+  <form action={rejectEvent}>
+    <input type="hidden" name="eventId" value={event.id} />
+
+    <button
+      type="submit"
+      style={{
+        border: 0,
+        borderRadius: 12,
+        background: '#b42318',
+        color: '#fff',
+        padding: '14px 22px',
+        fontSize: 15,
+        fontWeight: 800,
+        cursor: 'pointer',
+      }}
+    >
+      Rechazar
+    </button>
+  </form>
+</div>
           </div>
         </div>
       </div>
