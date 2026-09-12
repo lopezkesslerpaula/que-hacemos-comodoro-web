@@ -1,9 +1,9 @@
 'use client';
 // GitHub conectado con Vercel
-import { useMemo, useState } from 'react';
-
+import { useEffect, useMemo, useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 type EventItem = {
-  id: number;
+  id: string | number;
   title: string;
   category: string;
   date: string;
@@ -13,7 +13,10 @@ type EventItem = {
   emoji: string;
   featured?: boolean;
 };
-
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+);
 const categories = [
   ['🎵', 'Música'],
   ['🎭', 'Cultura'],
@@ -94,18 +97,55 @@ const events: EventItem[] = [
 export default function HomePage() {
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todos');
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<Array<string | number>>([]);
+const [publishedEvents, setPublishedEvents] = useState<EventItem[]>([]);
 
+useEffect(() => {
+  async function loadPublishedEvents() {
+    const { data, error } = await supabase
+      .from('events')
+      .select('*')
+      .eq('status', 'PUBLISHED')
+      .order('event_date', { ascending: true });
+
+    if (error) {
+      console.error('Error cargando eventos publicados:', error);
+      return;
+    }
+
+    const mappedEvents: EventItem[] = (data ?? []).map((event, index) => ({
+      id: event.id,
+      title: event.title,
+      category: event.category,
+      date: event.event_date,
+      time: String(event.event_time).slice(0, 5),
+      place: event.place,
+      price:
+        event.entry_type === 'Paga' && event.price !== null
+          ? `$ ${event.price}`
+          : event.entry_type === 'Gratis'
+            ? 'Gratis'
+            : 'Consultar',
+      emoji:
+        categories.find(([, name]) => name === event.category)?.[0] ?? '📅',
+      featured: index === 0,
+    }));
+
+    setPublishedEvents(mappedEvents);
+  }
+
+  loadPublishedEvents();
+}, []);
   const visibleEvents = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('es');
-    return events.filter((event) => {
+    return publishedEvents.filter((event) => {
       const matchesCategory = activeCategory === 'Todos' || event.category === activeCategory;
       const haystack = `${event.title} ${event.category} ${event.place}`.toLocaleLowerCase('es');
       return matchesCategory && (!normalized || haystack.includes(normalized));
     });
-  }, [query, activeCategory]);
+ }, [query, activeCategory, publishedEvents]);
 
-  function toggleFavorite(id: number) {
+  function toggleFavorite(id: string | number) {
     setFavorites((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   }
 
