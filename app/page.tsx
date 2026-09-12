@@ -253,7 +253,10 @@ useEffect(() => {
                   <div className="dateRow"><b>{event.date}</b><span>{event.time}</span></div>
                   <h3>{event.title}</h3>
                   <p>📍 {event.place}</p>
-                  <div className="eventFooter"><strong>{event.price}</strong><button type="button">Ver evento →</button></div>
+                  <div className="eventFooter">
+  <strong>{event.price}</strong>
+  <a href={`/eventos/${event.id}`}>Ver evento →</a>
+</div>
                 </div>
               </article>
             ))}
