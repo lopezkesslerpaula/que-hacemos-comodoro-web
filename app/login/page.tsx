@@ -26,7 +26,8 @@ const searchParams = useSearchParams();
 
     const email = String(formData.get('email') ?? '').trim();
     const password = String(formData.get('password') ?? '');
-
+const next = searchParams.get('next');
+const destination = next === '/publicar' ? '/publicar' : '/';
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -39,12 +40,7 @@ const searchParams = useSearchParams();
       setLoading(false);
       return;
     }
-
-   const next = searchParams.get('next');
-const destination = next === '/publicar' ? '/publicar' : '/';
-
-router.push(destination);
-router.refresh();
+window.location.href = destination;
   }
 
   return (
