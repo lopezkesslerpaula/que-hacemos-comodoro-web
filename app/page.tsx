@@ -99,7 +99,28 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [favorites, setFavorites] = useState<Array<string | number>>([]);
 const [publishedEvents, setPublishedEvents] = useState<EventItem[]>([]);
+const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+  async function checkSession() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
+    setIsLoggedIn(Boolean(user));
+  }
+
+  checkSession();
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, session) => {
+    setIsLoggedIn(Boolean(session?.user));
+  });
+
+  return () => {
+    subscription.unsubscribe();
+  };
+}, []);
 useEffect(() => {
   async function loadPublishedEvents() {
     const { data, error } = await supabase
@@ -148,7 +169,11 @@ useEffect(() => {
   function toggleFavorite(id: string | number) {
     setFavorites((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   }
-
+async function handleLogout() {
+  await supabase.auth.signOut();
+  setIsLoggedIn(false);
+  window.location.href = '/';
+}
   return (
     <main>
       <header className="topbar">
@@ -156,12 +181,34 @@ useEffect(() => {
           <span className="brandMark">Q</span>
           <span>Qué Hacemos <b>Comodoro</b></span>
         </a>
-        <nav className="nav" aria-label="Navegación principal">
+     <nav className="nav" aria-label="Navegación principal">
   <a href="#eventos">Eventos</a>
   <a href="#categorias">Categorías</a>
   <a href="/publicar">Publicar</a>
-  <a href="/mis-eventos">Mis eventos</a>
-  <a href="/perfil-organizador">Mi perfil</a>
+
+  {isLoggedIn ? (
+    <>
+      <a href="/mis-eventos">Mis eventos</a>
+      <a href="/perfil-organizador">Mi perfil</a>
+
+      <button
+        type="button"
+        onClick={handleLogout}
+        style={{
+          border: 0,
+          background: 'transparent',
+          padding: 0,
+          font: 'inherit',
+          color: 'inherit',
+          cursor: 'pointer',
+        }}
+      >
+        Salir
+      </button>
+    </>
+  ) : (
+    <a href="/login">Iniciar sesión</a>
+  )}
 
   <button
     className="navFavorite"
