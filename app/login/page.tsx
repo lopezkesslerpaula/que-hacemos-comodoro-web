@@ -40,7 +40,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.push('/publicar');
+    router.push('/');
     router.refresh();
   }
 
