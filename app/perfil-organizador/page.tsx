@@ -77,7 +77,10 @@ export default function PerfilOrganizadorPage() {
 
     loadStats();
   }, [router]);
-
+async function handleLogout() {
+  await supabase.auth.signOut();
+  window.location.href = '/';
+}
   return (
     <main
       style={{
@@ -104,7 +107,23 @@ export default function PerfilOrganizadorPage() {
         >
           ← Volver al inicio
         </Link>
-
+<button
+  type="button"
+  onClick={handleLogout}
+  style={{
+    display: 'block',
+    marginTop: 12,
+    border: 0,
+    background: 'transparent',
+    padding: 0,
+    color: '#6f32e8',
+    fontWeight: 800,
+    fontSize: 14,
+    cursor: 'pointer',
+  }}
+>
+  Cerrar sesión
+</button>
         <div style={{ marginTop: 30 }}>
           <span
             style={{
