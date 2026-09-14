@@ -18,8 +18,8 @@ type OrganizerEvent = {
   event_time: string;
   place: string;
   status: string;
+moderation_message: string | null;
 };
-
 const statusInfo: Record<
   string,
   { label: string; background: string; color: string }
@@ -68,7 +68,7 @@ export default function MisEventosPage() {
       const { data, error } = await supabase
         .from('events')
         .select(
-          'id, title, category, event_date, event_time, place, status'
+      'id, title, category, event_date, event_time, place, status, moderation_message'
         )
         .eq('organizer_id', user.id)
         .order('created_at', { ascending: false });
@@ -300,7 +300,26 @@ export default function MisEventosPage() {
                         </div>
                       </div>
                     </div>
-
+{event.status === 'CHANGES_REQUESTED' &&
+  event.moderation_message && (
+    <div
+      style={{
+        marginTop: 14,
+        padding: 14,
+        background: '#fff7e8',
+        border: '1px solid #f3d69b',
+        borderRadius: 12,
+        color: '#6f4b00',
+        fontSize: 14,
+        lineHeight: 1.6,
+      }}
+    >
+      <strong>Qué tenés que corregir:</strong>
+      <div style={{ marginTop: 4 }}>
+        {event.moderation_message}
+      </div>
+    </div>
+  )}
                     {event.status === 'CHANGES_REQUESTED' ? (
                       <Link
                         href={`/mis-eventos/${event.id}/editar`}
