@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,9 +10,23 @@ const supabase = createClient(
 );
 
 export default function PublicarEventoPage() {
+  const router = useRouter();
 const [enviado, setEnviado] = useState(false);
   const [tipoEntrada, setTipoEntrada] = useState('');
   const [imagenPreview, setImagenPreview] = useState<string | null>(null);
+  useEffect(() => {
+  async function checkSession() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      router.replace('/login?next=/publicar');
+    }
+  }
+
+  checkSession();
+}, [router]);
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
   event.preventDefault();
   const formElement = event.currentTarget;
