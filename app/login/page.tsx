@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -12,7 +12,7 @@ const supabase = createClient(
 
 export default function LoginPage() {
   const router = useRouter();
-const searchParams = useSearchParams();
+
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -26,7 +26,8 @@ const searchParams = useSearchParams();
 
     const email = String(formData.get('email') ?? '').trim();
     const password = String(formData.get('password') ?? '');
-const next = searchParams.get('next');
+const params = new URLSearchParams(window.location.search);
+const next = params.get('next');
 const destination = next === '/publicar' ? '/publicar' : '/';
     const { error } = await supabase.auth.signInWithPassword({
       email,
