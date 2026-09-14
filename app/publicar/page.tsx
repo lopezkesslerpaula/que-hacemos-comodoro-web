@@ -14,11 +14,21 @@ const [enviado, setEnviado] = useState(false);
   const [imagenPreview, setImagenPreview] = useState<string | null>(null);
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
   event.preventDefault();
+const {
+  data: { user },
+  error: userError,
+} = await supabase.auth.getUser();
 
+if (userError || !user) {
+  alert('Tenés que iniciar sesión para publicar un evento.');
+  window.location.href = '/login';
+  return;
+}
   const form = new FormData(event.currentTarget);
 
   const { error } = await supabase.from('events').insert({
    title: form.get('titulo'),
+    organizer_id: user.id,
     category: form.get('categoria'),
     event_date: form.get('fecha'),
     event_time: form.get('hora'),
