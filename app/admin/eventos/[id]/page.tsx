@@ -79,14 +79,16 @@ async function requestChangesEvent(formData: FormData) {
   'use server';
 
   const eventId = String(formData.get('eventId') ?? '');
-
+const moderationMessage = String(
+  formData.get('moderationMessage') ?? ''
+).trim();
   const cookieStore = await cookies();
   const authenticated =
     cookieStore.get('qhc_admin_session')?.value === getAdminToken();
 
-  if (!authenticated || !eventId) {
-    redirect('/admin');
-  }
+ if (!authenticated || !eventId || !moderationMessage) {
+  redirect('/admin');
+}
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -101,7 +103,10 @@ async function requestChangesEvent(formData: FormData) {
 
   const { error } = await supabase
     .from('events')
-    .update({ status: 'CHANGES_REQUESTED' })
+    .update({
+  status: 'CHANGES_REQUESTED',
+  moderation_message: moderationMessage,
+})
     .eq('id', eventId)
     .eq('status', 'PENDING_REVIEW');
 
@@ -334,21 +339,51 @@ export default async function AdminEventPage({
   <form action={requestChangesEvent}>
     <input type="hidden" name="eventId" value={event.id} />
 
-    <button
-      type="submit"
-      style={{
-        border: '1px solid #6f32e8',
-        borderRadius: 12,
-        background: '#fff',
-        color: '#6f32e8',
-        padding: '14px 22px',
-        fontSize: 15,
-        fontWeight: 800,
-        cursor: 'pointer',
-      }}
-    >
-      Pedir cambios
-    </button>
+<label
+  style={{
+    display: 'block',
+    marginBottom: 10,
+    fontWeight: 800,
+    color: '#201733',
+  }}
+>
+  ¿Qué debe corregir el organizador?
+</label>
+
+<textarea
+  required
+  name="moderationMessage"
+  rows={4}
+  placeholder="Ej: Corregir la dirección y agregar más información en la descripción."
+  style={{
+    width: '100%',
+    minWidth: 260,
+    boxSizing: 'border-box',
+    border: '1px solid #ddd5eb',
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 14,
+    resize: 'vertical',
+    marginBottom: 10,
+  }}
+/>
+
+<button
+  type="submit"
+  style={{
+    border: '1px solid #6f32e8',
+    borderRadius: 12,
+    background: '#fff',
+    color: '#6f32e8',
+    padding: '14px 22px',
+    fontSize: 15,
+    fontWeight: 800,
+    cursor: 'pointer',
+  }}
+>
+  Pedir cambios
+</button>
+
   </form>
 
   <form action={rejectEvent}>
