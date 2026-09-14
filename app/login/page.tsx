@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -12,7 +12,7 @@ const supabase = createClient(
 
 export default function LoginPage() {
   const router = useRouter();
-
+const searchParams = useSearchParams();
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -40,8 +40,11 @@ export default function LoginPage() {
       return;
     }
 
-    router.push('/');
-    router.refresh();
+   const next = searchParams.get('next');
+const destination = next === '/publicar' ? '/publicar' : '/';
+
+router.push(destination);
+router.refresh();
   }
 
   return (
