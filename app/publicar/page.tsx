@@ -14,6 +14,7 @@ const [enviado, setEnviado] = useState(false);
   const [imagenPreview, setImagenPreview] = useState<string | null>(null);
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
   event.preventDefault();
+  const formElement = event.currentTarget;
 const {
   data: { user },
   error: userError,
@@ -24,7 +25,7 @@ if (userError || !user) {
   window.location.href = '/login';
   return;
 }
-  const form = new FormData(event.currentTarget);
+  const form = new FormData(formElement);
 
   const { error } = await supabase.from('events').insert({
    title: form.get('titulo'),
