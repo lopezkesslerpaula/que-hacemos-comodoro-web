@@ -157,11 +157,20 @@ useEffect(() => {
           <span>Qué Hacemos <b>Comodoro</b></span>
         </a>
         <nav className="nav" aria-label="Navegación principal">
-          <a href="#eventos">Eventos</a>
-          <a href="#categorias">Categorías</a>
-          <a href="/publicar">Publicar</a>
-          <button className="navFavorite" type="button" title="Favoritos">♡ <span>{favorites.length}</span></button>
-        </nav>
+  <a href="#eventos">Eventos</a>
+  <a href="#categorias">Categorías</a>
+  <a href="/publicar">Publicar</a>
+  <a href="/mis-eventos">Mis eventos</a>
+  <a href="/perfil-organizador">Mi perfil</a>
+
+  <button
+    className="navFavorite"
+    type="button"
+    title="Favoritos"
+  >
+    ♡ <span>{favorites.length}</span>
+  </button>
+</nav>
       </header>
 
       <section className="hero" id="inicio">
