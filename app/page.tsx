@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 type EventItem = {
-  id: string | number;
+  id: string;
   title: string;
   category: string;
   date: string;
@@ -97,7 +97,7 @@ const events: EventItem[] = [
 export default function HomePage() {
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todos');
-  const [favorites, setFavorites] = useState<Array<string | number>>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
 const [publishedEvents, setPublishedEvents] = useState<EventItem[]>([]);
 const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
@@ -191,7 +191,7 @@ useEffect(() => {
     });
  }, [query, activeCategory, publishedEvents]);
 
- async function toggleFavorite(id: string | number) {
+ async function toggleFavorite(id: string) {
   if (!userId) {
     window.location.href = '/login';
     return;
