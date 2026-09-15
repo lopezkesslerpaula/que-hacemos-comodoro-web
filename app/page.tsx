@@ -363,7 +363,7 @@ async function handleLogout() {
                   <button
                     className={`heart ${favorites.includes(event.id) ? 'saved' : ''}`}
                     type="button"
-                    onClick={() => toggleFavorite(event.id)}
+                    onClick={() => alert('El corazón recibió el clic')}
                     aria-label={favorites.includes(event.id) ? `Quitar ${event.title} de favoritos` : `Guardar ${event.title} en favoritos`}
                   >{favorites.includes(event.id) ? '♥' : '♡'}</button>
                 </div>
