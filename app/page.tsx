@@ -100,6 +100,7 @@ export default function HomePage() {
   const [favorites, setFavorites] = useState<Array<string | number>>([]);
 const [publishedEvents, setPublishedEvents] = useState<EventItem[]>([]);
 const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => {
   async function checkSession() {
     const {
@@ -107,6 +108,7 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
     } = await supabase.auth.getUser();
 
     setIsLoggedIn(Boolean(user));
+    setUserId(user?.id ?? null);
   }
 
   checkSession();
@@ -114,6 +116,7 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
   const {
     data: { subscription },
   } = supabase.auth.onAuthStateChange((_event, session) => {
+    setUserId(session?.user?.id ?? null);
     setIsLoggedIn(Boolean(session?.user));
   });
 
@@ -121,6 +124,28 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
     subscription.unsubscribe();
   };
 }, []);
+  useEffect(() => {
+  async function loadFavorites() {
+    if (!userId) {
+      setFavorites([]);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('favorites')
+      .select('event_id')
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Error cargando favoritos:', error);
+      return;
+    }
+
+    setFavorites((data ?? []).map((item) => item.event_id));
+  }
+
+  loadFavorites();
+}, [userId]);
 useEffect(() => {
   async function loadPublishedEvents() {
     const { data, error } = await supabase
@@ -166,9 +191,46 @@ useEffect(() => {
     });
  }, [query, activeCategory, publishedEvents]);
 
-  function toggleFavorite(id: string | number) {
-    setFavorites((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+ async function toggleFavorite(id: string | number) {
+  if (!userId) {
+    window.location.href = '/login';
+    return;
   }
+
+  const eventId = String(id);
+  const isFavorite = favorites.includes(id);
+
+  if (isFavorite) {
+    const { error } = await supabase
+      .from('favorites')
+      .delete()
+      .eq('user_id', userId)
+      .eq('event_id', eventId);
+
+    if (error) {
+      console.error('Error eliminando favorito:', error);
+      return;
+    }
+
+    setFavorites((current) =>
+      current.filter((item) => String(item) !== eventId)
+    );
+  } else {
+    const { error } = await supabase
+      .from('favorites')
+      .insert({
+        user_id: userId,
+        event_id: eventId,
+      });
+
+    if (error) {
+      console.error('Error guardando favorito:', error);
+      return;
+    }
+
+    setFavorites((current) => [...current, id]);
+  }
+}
 async function handleLogout() {
   await supabase.auth.signOut();
   setIsLoggedIn(false);
