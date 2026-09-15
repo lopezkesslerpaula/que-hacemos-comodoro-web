@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-
+import ShareButton from './ShareButton';
 export default async function EventoPage({
   params,
 }: {
@@ -138,6 +138,16 @@ export default async function EventoPage({
     📍 Cómo llegar →
   </a>
 )}
+          <div
+  style={{
+    marginTop: 18,
+    display: 'flex',
+    gap: 12,
+    flexWrap: 'wrap',
+  }}
+>
+  <ShareButton title={event.title} />
+</div>
           <div
             style={{
               marginTop: 28,
