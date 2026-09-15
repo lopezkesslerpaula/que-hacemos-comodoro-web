@@ -75,7 +75,7 @@ a { color: inherit; text-decoration: none; }
 .categoryChip, .featuredChip { position: absolute; top: 13px; padding: 6px 9px; border-radius: 99px; font-size: 10px; font-weight: 900; }
 .categoryChip { left: 13px; background: rgba(255,255,255,.91); }
 .featuredChip { left: 13px; top: 45px; background: #241938; color: white; }
-.heart { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgba(255,255,255,.92); color: #453a50; font-size: 20px; cursor: pointer; }
+.heart { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgba(255,255,255,.92); color: #453a5e; font-size: 20px; cursor: pointer; z-index: 10; pointer-events: auto; }
 .heart.saved { color: #7a32df; }
 .eventBody { padding: 18px; }
 .dateRow { display: flex; justify-content: space-between; gap: 10px; color: var(--purple); font-size: 12px; }
