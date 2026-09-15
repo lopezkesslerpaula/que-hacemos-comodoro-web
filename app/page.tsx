@@ -32,7 +32,7 @@ const categories = [
 
 const events: EventItem[] = [
   {
-    id: 1,
+    id: '1',
     title: 'Festival de música en vivo',
     category: 'Música',
     date: 'Vie 11 Sep',
@@ -43,7 +43,7 @@ const events: EventItem[] = [
     featured: true,
   },
   {
-    id: 2,
+    id: '2',
     title: 'Feria de emprendedores',
     category: 'Ferias',
     date: 'Sáb 12 Sep',
@@ -53,7 +53,7 @@ const events: EventItem[] = [
     emoji: '🧺',
   },
   {
-    id: 3,
+    id: '3',
     title: 'Noche de teatro local',
     category: 'Cultura',
     date: 'Sáb 12 Sep',
@@ -63,7 +63,7 @@ const events: EventItem[] = [
     emoji: '🎭',
   },
   {
-    id: 4,
+    id: '4',
     title: 'Encuentro gastronómico',
     category: 'Gastronomía',
     date: 'Dom 13 Sep',
@@ -73,7 +73,7 @@ const events: EventItem[] = [
     emoji: '🍔',
   },
   {
-    id: 5,
+    id: '5',
     title: 'Tarde en familia',
     category: 'Familia',
     date: 'Dom 13 Sep',
@@ -83,7 +83,7 @@ const events: EventItem[] = [
     emoji: '🎈',
   },
   {
-    id: 6,
+    id: '6',
     title: 'Taller creativo para jóvenes',
     category: 'Educación',
     date: 'Mar 15 Sep',
