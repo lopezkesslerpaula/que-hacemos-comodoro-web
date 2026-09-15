@@ -71,7 +71,31 @@ export default function FavoritosPage() {
 
     loadFavorites();
   }, []);
+async function removeFavorite(eventId: string) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
+  if (!user) {
+    window.location.href = '/login?next=/favoritos';
+    return;
+  }
+
+  const { error } = await supabase
+    .from('favorites')
+    .delete()
+    .eq('user_id', user.id)
+    .eq('event_id', eventId);
+
+  if (error) {
+    alert(`Error eliminando favorito: ${error.message}`);
+    return;
+  }
+
+  setEvents((current) =>
+    current.filter((event) => event.id !== eventId)
+  );
+}
   return (
     <main
       style={{
@@ -176,7 +200,21 @@ export default function FavoritosPage() {
                   padding: 20,
                 }}
               >
-                <div style={{ fontSize: 28 }}>♥</div>
+                <button
+  type="button"
+  onClick={() => removeFavorite(event.id)}
+  title="Quitar de favoritos"
+  style={{
+    fontSize: 28,
+    border: 0,
+    background: 'transparent',
+    padding: 0,
+    cursor: 'pointer',
+    color: '#6f32e8',
+  }}
+>
+  ♥
+</button>
 
                 <div
                   style={{
