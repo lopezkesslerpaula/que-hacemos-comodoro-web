@@ -117,7 +117,27 @@ export default async function EventoPage({
             <InfoBox label="🎟️ Entrada" value={event.entry_type} />
             <InfoBox label="💰 Precio" value={precio} />
           </div>
-
+{event.address && (
+  <a
+    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+      `${event.address}, Comodoro Rivadavia, Chubut`
+    )}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      display: 'inline-block',
+      marginTop: 18,
+      padding: '12px 18px',
+      background: '#6f32e8',
+      color: '#fff',
+      borderRadius: 12,
+      textDecoration: 'none',
+      fontWeight: 800,
+    }}
+  >
+    📍 Cómo llegar →
+  </a>
+)}
           <div
             style={{
               marginTop: 28,
