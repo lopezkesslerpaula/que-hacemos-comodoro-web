@@ -13,6 +13,8 @@ const supabase = createClient(
 type EventRow = {
   id: string | number;
   status: string;
+  title: string;
+  event_date: string;
 };
 
 type Stats = {
@@ -20,17 +22,23 @@ type Stats = {
   published: number;
   pending: number;
   changesRequested: number;
+  publicationRate: number;
+  nextEventTitle: string | null;
+  nextEventDate: string | null;
 };
 
 export default function PerfilOrganizadorPage() {
   const router = useRouter();
 
-  const [stats, setStats] = useState<Stats>({
-    total: 0,
-    published: 0,
-    pending: 0,
-    changesRequested: 0,
-  });
+ const [stats, setStats] = useState<Stats>({
+  total: 0,
+  published: 0,
+  pending: 0,
+  changesRequested: 0,
+  publicationRate: 0,
+  nextEventTitle: null,
+  nextEventDate: null,
+});
 
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +56,7 @@ export default function PerfilOrganizadorPage() {
 
       const { data, error } = await supabase
         .from('events')
-        .select('id, status')
+        .select('id, status, title, event_date')
         .eq('organizer_id', user.id);
 
       if (error) {
@@ -58,18 +66,34 @@ export default function PerfilOrganizadorPage() {
       }
 
       const events = (data ?? []) as EventRow[];
+const publishedEvents = events.filter(
+  (event) => event.status === 'PUBLISHED'
+);
 
+const today = new Date().toISOString().slice(0, 10);
+
+const upcomingPublishedEvents = publishedEvents
+  .filter((event) => event.event_date >= today)
+  .sort((a, b) => a.event_date.localeCompare(b.event_date));
+
+const nextEvent = upcomingPublishedEvents[0] ?? null;
+
+const publicationRate =
+  events.length > 0
+    ? Math.round((publishedEvents.length / events.length) * 100)
+    : 0;
       setStats({
         total: events.length,
-        published: events.filter(
-          (event) => event.status === 'PUBLISHED'
-        ).length,
+        published: publishedEvents.length,
         pending: events.filter(
           (event) => event.status === 'PENDING_REVIEW'
         ).length,
         changesRequested: events.filter(
           (event) => event.status === 'CHANGES_REQUESTED'
         ).length,
+        publicationRate,
+nextEventTitle: nextEvent?.title ?? null,
+nextEventDate: nextEvent?.event_date ?? null,
       });
 
       setLoading(false);
@@ -199,6 +223,21 @@ async function handleLogout() {
                 label="Cambios solicitados"
                 value={stats.changesRequested}
               />
+            <StatCard
+  icon="📈"
+  label="Tasa de publicación"
+  value={`${stats.publicationRate}%`}
+/>
+
+<StatCard
+  icon="📍"
+  label="Próximo evento"
+  value={
+    stats.nextEventDate
+      ? `${stats.nextEventTitle ?? ''} · ${stats.nextEventDate}`
+      : 'Sin próximos eventos'
+  }
+/>
             </div>
 
             <div
@@ -279,7 +318,7 @@ function StatCard({
 }: {
   icon: string;
   label: string;
-  value: number;
+  value: number | string;
 }) {
   return (
     <div
