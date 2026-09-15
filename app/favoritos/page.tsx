@@ -142,7 +142,7 @@ export default function FavoritosPage() {
             </p>
 
             <Link
-              href="/eventos"
+              href="/"
               style={{
                 display: 'inline-block',
                 marginTop: 10,
