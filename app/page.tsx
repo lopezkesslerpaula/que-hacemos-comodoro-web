@@ -363,7 +363,7 @@ async function handleLogout() {
                   <button
                     className={`heart ${favorites.includes(event.id) ? 'saved' : ''}`}
                     type="button"
-                   onClick={() => alert(userId ? `Usuario detectado: ${userId}` : 'NO HAY USUARIO DETECTADO')}
+                   onClick={() => alert(`Evento: ${event.id}`)}
                     aria-label={favorites.includes(event.id) ? `Quitar ${event.title} de favoritos` : `Guardar ${event.title} en favoritos`}
                   >{favorites.includes(event.id) ? '♥' : '♡'}</button>
                 </div>
