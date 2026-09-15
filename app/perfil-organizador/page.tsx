@@ -229,15 +229,17 @@ async function handleLogout() {
   value={`${stats.publicationRate}%`}
 />
 
-<StatCard
-  icon="📍"
-  label="Próximo evento"
-  value={
-    stats.nextEventDate
-      ? `${stats.nextEventTitle ?? ''} · ${stats.nextEventDate}`
-      : 'Sin próximos eventos'
-  }
-/>
+<div style={{ gridColumn: 'span 2' }}>
+  <StatCard
+    icon="📍"
+    label="Próximo evento"
+    value={
+      stats.nextEventDate
+        ? `${stats.nextEventTitle ?? ''} · ${stats.nextEventDate}`
+        : 'Sin próximos eventos'
+    }
+  />
+</div>
             </div>
 
             <div
