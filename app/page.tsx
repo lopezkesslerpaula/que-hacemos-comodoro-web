@@ -272,13 +272,15 @@ async function handleLogout() {
     <a href="/login">Iniciar sesión</a>
   )}
 
-  <button
+  <a
+    href="/favoritos"
     className="navFavorite"
-    type="button"
+    
     title="Favoritos"
   >
     ♡ <span>{favorites.length}</span>
-  </button>
+    </a>
+  
 </nav>
       </header>
 
