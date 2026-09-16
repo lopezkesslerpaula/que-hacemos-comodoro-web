@@ -383,8 +383,8 @@ if (enviado) {
       if (archivo) {
   setImagenArchivo(archivo);
   setImagenPreview(URL.createObjectURL(archivo));
-}
-      }
+
+      
     }}
     style={{
       ...inputStyle,
