@@ -14,6 +14,7 @@ export default function PublicarEventoPage() {
 const [enviado, setEnviado] = useState(false);
   const [tipoEntrada, setTipoEntrada] = useState('');
   const [imagenPreview, setImagenPreview] = useState<string | null>(null);
+  const [imagenArchivo, setImagenArchivo] = useState<File | null>(null);
   useEffect(() => {
   async function checkSession() {
     const {
@@ -42,7 +43,30 @@ if (userError || !user) {
 }
   const form = new FormData(formElement);
 
-  const { error } = await supabase.from('events').insert({
+let coverImageUrl: string | null = null;
+
+if (imagenArchivo) {
+  const extension = imagenArchivo.name.split('.').pop() || 'jpg';
+  const fileName = `${user.id}/${crypto.randomUUID()}.${extension}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('event-covers')
+    .upload(fileName, imagenArchivo);
+
+  if (uploadError) {
+    console.error(uploadError);
+    alert(`Error subiendo la imagen: ${uploadError.message}`);
+    return;
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from('event-covers')
+    .getPublicUrl(fileName);
+
+  coverImageUrl = publicUrlData.publicUrl;
+}
+
+const { error } = await supabase.from('events').insert({
    title: form.get('titulo'),
     organizer_id: user.id,
     category: form.get('categoria'),
@@ -53,7 +77,8 @@ if (userError || !user) {
     entry_type: form.get('entrada'),
     price: form.get('precio') || null,
     description: form.get('descripcion'),
-    status: 'PENDING_REVIEW'
+cover_image_url: coverImageUrl,
+status: 'PENDING_REVIEW'
   });
 
   if (error) {
@@ -356,7 +381,9 @@ if (enviado) {
       const archivo = e.target.files?.[0];
 
       if (archivo) {
-        setImagenPreview(URL.createObjectURL(archivo));
+  setImagenArchivo(archivo);
+  setImagenPreview(URL.createObjectURL(archivo));
+}
       }
     }}
     style={{
