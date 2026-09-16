@@ -10,6 +10,7 @@ type EventItem = {
   time: string;
   place: string;
   price: string;
+  coverImageUrl: string | null;
   emoji: string;
   featured?: boolean;
 };
@@ -166,6 +167,7 @@ useEffect(() => {
       date: event.event_date,
       time: String(event.event_time).slice(0, 5),
       place: event.place,
+      coverImageUrl: event.cover_image_url,
       price:
         event.entry_type === 'Paga' && event.price !== null
           ? `$ ${event.price}`
@@ -359,7 +361,21 @@ async function handleLogout() {
             {visibleEvents.map((event) => (
               <article className="eventCard" key={event.id}>
                 <div className="eventImage">
-                  <span className="eventEmoji">{event.emoji}</span>
+                  {event.coverImageUrl ? (
+  <img
+    src={event.coverImageUrl}
+    alt={`Portada de ${event.title}`}
+    style={{
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      position: 'absolute',
+      inset: 0,
+    }}
+  />
+) : (
+  <span className="eventEmoji">{event.emoji}</span>
+)}
                   <span className="categoryChip">{event.category}</span>
                   {event.featured && <span className="featuredChip">Destacado</span>}
                   <button
