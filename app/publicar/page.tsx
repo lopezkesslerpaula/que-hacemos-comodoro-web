@@ -375,23 +375,22 @@ if (enviado) {
   </div>
 
   <input
-    type="file"
-    accept="image/*"
-    onChange={(e) => {
-      const archivo = e.target.files?.[0];
+  type="file"
+  accept="image/*"
+  onChange={(e) => {
+    const archivo = e.target.files?.[0];
 
-      if (archivo) {
-  setImagenArchivo(archivo);
-  setImagenPreview(URL.createObjectURL(archivo));
-
-      
-    }}
-    style={{
-      ...inputStyle,
-      padding: 10,
-      background: '#fff',
-    }}
-  />
+    if (archivo) {
+      setImagenArchivo(archivo);
+      setImagenPreview(URL.createObjectURL(archivo));
+    }
+  }}
+  style={{
+    ...inputStyle,
+    padding: 10,
+    background: '#fff',
+  }}
+/>
 
   {imagenPreview && (
     <img
