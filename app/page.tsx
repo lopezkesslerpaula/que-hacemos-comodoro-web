@@ -10,7 +10,7 @@ type EventItem = {
   time: string;
   place: string;
   price: string;
-  coverImageUrl: string | null;
+  coverImageUrl?: string | null;
   emoji: string;
   featured?: boolean;
 };
