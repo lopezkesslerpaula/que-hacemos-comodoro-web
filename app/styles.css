@@ -70,7 +70,7 @@ a { color: inherit; text-decoration: none; }
 .filterPills button.selected { background: var(--ink); color: white; border-color: var(--ink); }
 .eventGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .eventCard { overflow: hidden; border: 1px solid var(--line); border-radius: 22px; background: white; box-shadow: 0 10px 32px rgba(57, 34, 78, .06); }
-.eventImage { position: relative; height: 180px; display: grid; place-items: center; background: linear-gradient(145deg, #eee4ff, #f9e9f0); }
+.eventImage { position: relative; height: 180px; display: grid; place-items: center; background: linear-gradient(145deg, #eee4ff, #f9e9f0); overflow: hidden; }
 .eventEmoji { font-size: 72px; filter: drop-shadow(0 8px 8px rgba(45, 24, 75, .10)); }
 .categoryChip, .featuredChip { position: absolute; top: 13px; padding: 6px 9px; border-radius: 99px; font-size: 10px; font-weight: 900; }
 .categoryChip { left: 13px; background: rgba(255,255,255,.91); }
