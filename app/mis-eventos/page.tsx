@@ -204,7 +204,7 @@ async function handleSignOut() {
   Cerrar sesión
 </button>
         </div>
-
+</div>
         {errorMessage && (
           <div
             style={{
