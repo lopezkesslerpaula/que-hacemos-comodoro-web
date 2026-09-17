@@ -86,7 +86,18 @@ export default function MisEventosPage() {
 
     loadEvents();
   }, [router]);
+async function handleSignOut() {
+  const { error } = await supabase.auth.signOut();
 
+  if (error) {
+    console.error('Error cerrando sesión:', error);
+    setErrorMessage('No pudimos cerrar la sesión.');
+    return;
+  }
+
+  router.replace('/');
+  router.refresh();
+}
   if (loading) {
     return (
       <main style={pageStyle}>
@@ -157,7 +168,13 @@ export default function MisEventosPage() {
               Administrá los eventos que enviaste.
             </p>
           </div>
-
+<div
+  style={{
+    display: 'flex',
+    gap: 10,
+    alignItems: 'center',
+  }}
+>
           <Link
             href="/publicar"
             style={{
@@ -171,6 +188,21 @@ export default function MisEventosPage() {
           >
             + Publicar evento
           </Link>
+  <button
+  type="button"
+  onClick={handleSignOut}
+  style={{
+    background: '#fff',
+    color: '#6f32e8',
+    border: '1px solid #d8c8f7',
+    padding: '13px 18px',
+    borderRadius: 12,
+    fontWeight: 800,
+    cursor: 'pointer',
+  }}
+>
+  Cerrar sesión
+</button>
         </div>
 
         {errorMessage && (
