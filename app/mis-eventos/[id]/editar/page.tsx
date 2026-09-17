@@ -23,6 +23,7 @@ type EventData = {
   description: string;
   status: string;
   moderation_message: string | null;
+  cover_image_url: string | null;
 };
 
 export default function EditarEventoPage() {
@@ -35,7 +36,9 @@ export default function EditarEventoPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
+const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
+const [imageFile, setImageFile] = useState<File | null>(null);
+const [imagePreview, setImagePreview] = useState<string | null>(null);
   useEffect(() => {
     async function loadEvent() {
       const {
@@ -51,7 +54,7 @@ export default function EditarEventoPage() {
       const { data, error } = await supabase
         .from('events')
         .select(
-          'id, title, category, event_date, event_time, place, address, entry_type, price, description, status, moderation_message'
+        'id, title, category, event_date, event_time, place, address, entry_type, price, description, status, moderation_message, cover_image_url'
         )
         .eq('id', eventId)
         .eq('organizer_id', user.id)
@@ -69,6 +72,7 @@ export default function EditarEventoPage() {
       }
 
       setEventData(data as EventData);
+      setCoverImageUrl(data.cover_image_url ?? null);
       setLoading(false);
     }
 
@@ -95,7 +99,29 @@ export default function EditarEventoPage() {
     const form = new FormData(formElement);
 
     const priceValue = String(form.get('price') ?? '').trim();
+let finalCoverImageUrl = coverImageUrl;
 
+if (imageFile) {
+  const extension = imageFile.name.split('.').pop() || 'jpg';
+  const fileName = `${user.id}/${crypto.randomUUID()}.${extension}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('event-covers')
+    .upload(fileName, imageFile);
+
+  if (uploadError) {
+    console.error(uploadError);
+    setErrorMessage(`Error subiendo la imagen: ${uploadError.message}`);
+    setSaving(false);
+    return;
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from('event-covers')
+    .getPublicUrl(fileName);
+
+  finalCoverImageUrl = publicUrlData.publicUrl;
+}
     const { error } = await supabase
       .from('events')
       .update({
@@ -108,6 +134,7 @@ export default function EditarEventoPage() {
         entry_type: String(form.get('entry_type') ?? ''),
         price: priceValue ? Number(priceValue) : null,
         description: String(form.get('description') ?? '').trim(),
+        cover_image_url: finalCoverImageUrl,
         status: 'PENDING_REVIEW',
         moderation_message: null,
       })
@@ -339,7 +366,53 @@ export default function EditarEventoPage() {
                 }}
               />
             </label>
+<label style={labelStyle}>
+  Imagen de portada
 
+  {(imagePreview || coverImageUrl) && (
+    <img
+      src={imagePreview || coverImageUrl || ''}
+      alt="Vista previa de la portada"
+      style={{
+        width: '100%',
+        height: 220,
+        objectFit: 'cover',
+        borderRadius: 14,
+        marginTop: 8,
+        marginBottom: 10,
+        display: 'block',
+      }}
+    />
+  )}
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+
+      if (file) {
+        setImageFile(file);
+        setImagePreview(URL.createObjectURL(file));
+      }
+    }}
+    style={{
+      ...inputStyle,
+      padding: 10,
+      background: '#fff',
+    }}
+  />
+
+  <span
+    style={{
+      fontSize: 12,
+      color: '#6f657f',
+      marginTop: 6,
+    }}
+  >
+    Si no elegís otra imagen, se conservará la portada actual.
+  </span>
+</label>
             <button
               type="submit"
               disabled={saving}
