@@ -81,7 +81,20 @@ export default async function EventoPage({
           >
             {event.category}
           </div>
-
+{event.cover_image_url && (
+  <img
+    src={event.cover_image_url}
+    alt={`Portada de ${event.title}`}
+    style={{
+      width: '100%',
+      height: 360,
+      objectFit: 'cover',
+      borderRadius: 18,
+      marginBottom: 24,
+      display: 'block',
+    }}
+  />
+)}
           <h1
             style={{
               margin: '0 0 10px',
