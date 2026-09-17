@@ -27,7 +27,8 @@ export default function LoginPage() {
     const email = String(formData.get('email') ?? '').trim();
     const password = String(formData.get('password') ?? '');
 const params = new URLSearchParams(window.location.search);
-const next = params.get('next');
+const destination =
+  next === '/publicar' ? '/publicar' : '/mis-eventos';
 const destination = next === '/publicar' ? '/publicar' : '/';
     const { error } = await supabase.auth.signInWithPassword({
       email,
