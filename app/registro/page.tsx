@@ -103,7 +103,7 @@ export default function RegistroPage() {
           </p>
 
           <Link
-            href="/"
+            href="/login"
             style={{
               display: 'inline-block',
               background: '#6f32e8',
@@ -114,7 +114,7 @@ export default function RegistroPage() {
               fontWeight: 800,
             }}
           >
-            Volver al inicio
+            Ir a iniciar sesión
           </Link>
         </div>
       </main>
