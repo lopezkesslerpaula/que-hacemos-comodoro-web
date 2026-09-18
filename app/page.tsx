@@ -280,7 +280,7 @@ async function handleLogout() {
     
     title="Favoritos"
   >
-    ♡ <span>{favorites.length}</span>
+    ♡ Favoritos <span>{favorites.length}</span>
     </a>
   
 </nav>
