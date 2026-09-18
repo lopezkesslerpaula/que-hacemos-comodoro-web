@@ -344,16 +344,7 @@ async function handleLogout() {
       <section className="section eventsSection" id="eventos">
         <div className="sectionHeading eventsHeading">
           <div><span className="sectionKicker">PRÓXIMOS PLANES</span><h2>Eventos para vos</h2></div>
-          <div className="filterPills" aria-label="Filtrar eventos">
-            {['Todos', ...categories.map(([, name]) => name)].map((category) => (
-              <button
-                key={category}
-                type="button"
-                className={activeCategory === category ? 'selected' : ''}
-                onClick={() => setActiveCategory(category)}
-              >{category}</button>
-            ))}
-          </div>
+         
         </div>
 
         {visibleEvents.length ? (
