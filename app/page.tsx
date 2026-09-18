@@ -345,7 +345,7 @@ async function handleLogout() {
         <div className="sectionHeading eventsHeading">
           <div><span className="sectionKicker">PRÓXIMOS PLANES</span><h2>Eventos para vos</h2></div>
           <div className="filterPills" aria-label="Filtrar eventos">
-            {['Todos', 'Música', 'Ferias', 'Cultura'].map((category) => (
+            {['Todos', ...categories.map(([, name]) => name)].map((category) => (
               <button
                 key={category}
                 type="button"
