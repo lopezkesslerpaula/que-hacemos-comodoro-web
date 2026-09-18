@@ -73,7 +73,22 @@ export default function FavoritosPage() {
 
     loadFavorites();
   }, []);
-async function removeFavorite(eventId: string) {
+const today = new Date().toISOString().slice(0, 10);
+
+const upcomingEvents = events.filter(
+  (event) => event.event_date >= today
+);
+
+const pastEvents = events
+  .filter((event) => event.event_date < today)
+  .sort((a, b) => {
+    const dateA = `${a.event_date}T${a.event_time || '00:00'}`;
+    const dateB = `${b.event_date}T${b.event_time || '00:00'}`;
+    return dateB.localeCompare(dateA);
+  });
+
+  async function removeFavorite(eventId: string) {
+ 
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -192,7 +207,7 @@ async function removeFavorite(eventId: string) {
               marginTop: 28,
             }}
           >
-            {events.map((event) => (
+            {upcomingEvents.map((event) => (
               <div
                 key={event.id}
                 style={{
@@ -269,6 +284,56 @@ async function removeFavorite(eventId: string) {
             ))}
           </div>
         )}
+        {pastEvents.length > 0 && (
+  <div style={{ marginTop: 36 }}>
+    <h2 style={{ fontSize: 22, margin: '0 0 6px' }}>
+      Eventos pasados
+    </h2>
+
+    <p style={{ color: '#6f657f', margin: '0 0 18px' }}>
+      Eventos que guardaste y que ya finalizaron.
+    </p>
+
+    <div style={{ display: 'grid', gap: 12 }}>
+      {pastEvents.map((event) => (
+        <div
+          key={event.id}
+          style={{
+            background: '#fff',
+            border: '1px solid #ece9f2',
+            borderRadius: 14,
+            padding: 16,
+          }}
+        >
+          <strong>{event.title}</strong>
+
+          <div
+            style={{
+              color: '#6f657f',
+              fontSize: 13,
+              marginTop: 6,
+            }}
+          >
+            {event.category} · {event.event_date} · {event.event_time}
+          </div>
+
+          <Link
+            href={`/eventos/${event.id}`}
+            style={{
+              display: 'inline-block',
+              color: '#6f32e8',
+              fontWeight: 800,
+              textDecoration: 'none',
+              marginTop: 10,
+            }}
+          >
+            Ver evento →
+          </Link>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
       </div>
     </main>
   );
