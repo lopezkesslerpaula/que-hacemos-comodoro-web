@@ -175,6 +175,20 @@ async function handleSignOut() {
     alignItems: 'center',
   }}
 >
+  <Link
+  href="/perfil-organizador"
+  style={{
+    background: '#fff',
+    color: '#6f32e8',
+    textDecoration: 'none',
+    padding: '13px 18px',
+    borderRadius: 12,
+    border: '1px solid #d8c8f7',
+    fontWeight: 800,
+  }}
+>
+  Mi perfil
+</Link>
           <Link
             href="/publicar"
             style={{
