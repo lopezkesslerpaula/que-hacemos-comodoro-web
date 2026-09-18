@@ -16,6 +16,7 @@ type FavoriteEvent = {
   event_date: string;
   event_time: string;
   place: string;
+  cover_image_url?: string | null;
 };
 
 export default function FavoritosPage() {
@@ -54,7 +55,7 @@ export default function FavoritosPage() {
 
       const { data: favoriteEvents, error: eventsError } = await supabase
         .from('events')
-        .select('id, title, category, event_date, event_time, place')
+        .select('id, title, category, event_date, event_time, place, cover_image_url')
         .in('id', eventIds)
         .eq('status', 'PUBLISHED')
         .order('event_date', { ascending: true });
@@ -200,6 +201,20 @@ async function removeFavorite(eventId: string) {
                   padding: 20,
                 }}
               >
+               {event.cover_image_url && (
+  <img
+    src={event.cover_image_url}
+    alt={`Portada de ${event.title}`}
+    style={{
+      width: '100%',
+      height: 180,
+      objectFit: 'cover',
+      borderRadius: 14,
+      marginBottom: 14,
+      display: 'block',
+    }}
+  />
+)}
                 <button
   type="button"
   onClick={() => removeFavorite(event.id)}
