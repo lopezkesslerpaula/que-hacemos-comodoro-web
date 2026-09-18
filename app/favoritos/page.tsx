@@ -58,7 +58,8 @@ export default function FavoritosPage() {
         .select('id, title, category, event_date, event_time, place, cover_image_url')
         .in('id', eventIds)
         .eq('status', 'PUBLISHED')
-        .order('event_date', { ascending: true });
+        .order('event_date', { ascending: true })
+.order('event_time', { ascending: true });
 
       if (eventsError) {
         console.error('Error cargando eventos favoritos:', eventsError);
