@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ShareButton from './ShareButton';
+import FavoriteButton from './FavoriteButton';
 export default async function EventoPage({
   params,
 }: {
@@ -95,15 +96,25 @@ export default async function EventoPage({
     }}
   />
 )}
-          <h1
-            style={{
-              margin: '0 0 10px',
-              fontSize: 42,
-            }}
-          >
-            {event.title}
-          </h1>
+       <div
+  style={{
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 16,
+  }}
+>
+  <h1
+    style={{
+      margin: '0 0 10px',
+      fontSize: 42,
+    }}
+  >
+    {event.title}
+  </h1>
 
+  <FavoriteButton eventId={event.id} />
+</div>
           <p
             style={{
               margin: '0 0 28px',
