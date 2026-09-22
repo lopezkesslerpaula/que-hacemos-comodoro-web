@@ -209,6 +209,24 @@ window.location.href = destination;
               Crear cuenta
             </Link>
           </p>
+          <p
+  style={{
+    margin: '10px 0 0',
+    textAlign: 'center',
+    fontSize: 14,
+  }}
+>
+  <Link
+    href="/recuperar-password"
+    style={{
+      color: '#6f32e8',
+      fontWeight: 700,
+      textDecoration: 'none',
+    }}
+  >
+    ¿Olvidaste tu contraseña?
+  </Link>
+</p>
         </div>
       </div>
     </main>
