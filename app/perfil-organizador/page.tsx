@@ -22,6 +22,7 @@ type Stats = {
   published: number;
   pending: number;
   changesRequested: number;
+  rejected: number;
   publicationRate: number;
   nextEventTitle: string | null;
   nextEventDate: string | null;
@@ -35,6 +36,7 @@ export default function PerfilOrganizadorPage() {
   published: 0,
   pending: 0,
   changesRequested: 0,
+   rejected: 0,
   publicationRate: 0,
   nextEventTitle: null,
   nextEventDate: null,
@@ -91,6 +93,9 @@ const publicationRate =
         changesRequested: events.filter(
           (event) => event.status === 'CHANGES_REQUESTED'
         ).length,
+        rejected: events.filter(
+  (event) => event.status === 'REJECTED'
+).length,
         publicationRate,
 nextEventTitle: nextEvent?.title ?? null,
 nextEventDate: nextEvent?.event_date ?? null,
@@ -223,6 +228,11 @@ async function handleLogout() {
                 label="Cambios solicitados"
                 value={stats.changesRequested}
               />
+              <StatCard
+  icon="❌"
+  label="Rechazados"
+  value={stats.rejected}
+/>
             <StatCard
   icon="📈"
   label="Tasa de publicación"
