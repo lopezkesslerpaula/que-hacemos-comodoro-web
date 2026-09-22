@@ -13,6 +13,8 @@ type EventItem = {
   coverImageUrl?: string | null;
   emoji: string;
   featured?: boolean;
+  latitude?: number | null;
+longitude?: number | null;
 };
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -102,6 +104,9 @@ export default function HomePage() {
 const [publishedEvents, setPublishedEvents] = useState<EventItem[]>([]);
 const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [nearbyOnly, setNearbyOnly] = useState(false);
+const [userLatitude, setUserLatitude] = useState<number | null>(null);
+const [userLongitude, setUserLongitude] = useState<number | null>(null);
   useEffect(() => {
   async function checkSession() {
     const {
@@ -167,6 +172,8 @@ useEffect(() => {
       date: event.event_date,
       time: String(event.event_time).slice(0, 5),
       place: event.place,
+      latitude: event.latitude,
+longitude: event.longitude,
       coverImageUrl: event.cover_image_url,
       price:
         event.entry_type === 'Paga' && event.price !== null
@@ -184,14 +191,59 @@ useEffect(() => {
 
   loadPublishedEvents();
 }, []);
-  const visibleEvents = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase('es');
-    return publishedEvents.filter((event) => {
-      const matchesCategory = activeCategory === 'Todos' || event.category === activeCategory;
-      const haystack = `${event.title} ${event.category} ${event.place}`.toLocaleLowerCase('es');
-      return matchesCategory && (!normalized || haystack.includes(normalized));
-    });
- }, [query, activeCategory, publishedEvents]);
+ const visibleEvents = useMemo(() => {
+  const normalized = query.trim().toLocaleLowerCase('es');
+
+  return publishedEvents.filter((event) => {
+    const matchesCategory =
+      activeCategory === 'Todos' || event.category === activeCategory;
+
+    const haystack =
+      `${event.title} ${event.category} ${event.place}`.toLocaleLowerCase('es');
+
+    const matchesSearch =
+      !normalized || haystack.includes(normalized);
+
+    let matchesNearby = true;
+
+    if (
+      nearbyOnly &&
+      userLatitude !== null &&
+      userLongitude !== null
+    ) {
+      if (event.latitude == null || event.longitude == null) {
+        matchesNearby = false;
+      } else {
+        const toRad = (value: number) => (value * Math.PI) / 180;
+
+        const earthRadiusKm = 6371;
+        const dLat = toRad(event.latitude - userLatitude);
+        const dLon = toRad(event.longitude - userLongitude);
+
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(toRad(userLatitude)) *
+            Math.cos(toRad(event.latitude)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+
+        const distanceKm =
+          earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        matchesNearby = distanceKm <= 10;
+      }
+    }
+
+    return matchesCategory && matchesSearch && matchesNearby;
+  });
+}, [
+  query,
+  activeCategory,
+  publishedEvents,
+  nearbyOnly,
+  userLatitude,
+  userLongitude,
+]);
 
  async function toggleFavorite(id: string) {
   if (!userId) {
@@ -233,7 +285,38 @@ useEffect(() => {
     setFavorites((current) => [...current, id]);
   }
 }
-async function handleLogout() {
+function handleNearbyEvents() {
+  if (nearbyOnly) {
+    setNearbyOnly(false);
+    setUserLatitude(null);
+    setUserLongitude(null);
+    return;
+  }
+
+  if (!navigator.geolocation) {
+    alert('Tu navegador no permite obtener tu ubicación.');
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      setUserLatitude(position.coords.latitude);
+      setUserLongitude(position.coords.longitude);
+      setNearbyOnly(true);
+    },
+    () => {
+      alert(
+        'No pudimos obtener tu ubicación. Revisá que hayas permitido el acceso a la ubicación.'
+      );
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 60000,
+    }
+  );
+}
+  async function handleLogout() {
   await supabase.auth.signOut();
   setIsLoggedIn(false);
   window.location.href = '/';
@@ -344,7 +427,21 @@ async function handleLogout() {
       <section className="section eventsSection" id="eventos">
         <div className="sectionHeading eventsHeading">
           <div><span className="sectionKicker">PRÓXIMOS PLANES</span><h2>Eventos para vos</h2></div>
-         
+        <button
+  type="button"
+  onClick={handleNearbyEvents}
+  style={{
+    border: nearbyOnly ? '2px solid #7c3aed' : '1px solid #d8ccf5',
+    background: nearbyOnly ? '#7c3aed' : '#ffffff',
+    color: nearbyOnly ? '#ffffff' : '#6d28d9',
+    borderRadius: 999,
+    padding: '10px 16px',
+    fontWeight: 700,
+    cursor: 'pointer',
+  }}
+>
+  📍 {nearbyOnly ? 'Mostrando cerca de mí' : 'Cerca de mí'}
+</button> 
         </div>
 
         {visibleEvents.length ? (
