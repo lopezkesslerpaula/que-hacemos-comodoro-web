@@ -316,6 +316,38 @@ function handleNearbyEvents() {
     }
   );
 }
+  function getDistanceText(event: EventItem) {
+  if (
+    userLatitude === null ||
+    userLongitude === null ||
+    event.latitude == null ||
+    event.longitude == null
+  ) {
+    return null;
+  }
+
+  const toRad = (value: number) => (value * Math.PI) / 180;
+  const earthRadiusKm = 6371;
+
+  const dLat = toRad(event.latitude - userLatitude);
+  const dLon = toRad(event.longitude - userLongitude);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(userLatitude)) *
+      Math.cos(toRad(event.latitude)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const distanceKm =
+    earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  if (distanceKm < 1) {
+    return `A ${Math.round(distanceKm * 1000)} m`;
+  }
+
+  return `A ${distanceKm.toFixed(1).replace('.', ',')} km`;
+}
   async function handleLogout() {
   await supabase.auth.signOut();
   setIsLoggedIn(false);
@@ -477,6 +509,9 @@ function handleNearbyEvents() {
                   <div className="dateRow"><b>{event.date}</b><span>{event.time}</span></div>
                   <h3>{event.title}</h3>
                   <p>📍 {event.place}</p>
+                  {nearbyOnly && getDistanceText(event) && (
+  <p>📍 {getDistanceText(event)}</p>
+)}
                   <div className="eventFooter">
   <strong>{event.price}</strong>
   <a href={`/eventos/${event.id}`}>Ver evento →</a>
