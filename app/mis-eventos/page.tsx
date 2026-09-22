@@ -374,13 +374,13 @@ async function handleSignOut() {
                         Corregir evento →
                       </Link>
                     ) : event.status === 'PUBLISHED' ? (
-                      <Link
-                        href={`/eventos/${event.id}`}
-                        style={buttonStyle}
-                      >
-                        Ver publicado →
-                      </Link>)}
-                    ) : event.status === 'REJECTED' ? (
+  <Link
+    href={`/eventos/${event.id}`}
+    style={buttonStyle}
+  >
+    Ver publicado →
+  </Link>
+) : event.status === 'REJECTED' ? (
   <div
     style={{
       maxWidth: 280,
@@ -398,7 +398,7 @@ async function handleSignOut() {
       {event.moderation_message || 'No se indicó un motivo.'}
     </div>
   </div>
-                    ) : (
+) : (
   <span
     style={{
       color: '#6f65f7',
