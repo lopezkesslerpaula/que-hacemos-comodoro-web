@@ -379,18 +379,36 @@ async function handleSignOut() {
                         style={buttonStyle}
                       >
                         Ver publicado →
-                      </Link>
+                      </Link>)}
+                    ) : event.status === 'REJECTED' ? (
+  <div
+    style={{
+      maxWidth: 280,
+      padding: 12,
+      background: '#fff1f2',
+      border: '1px solid #fecdd3',
+      borderRadius: 12,
+      color: '#a8283a',
+      fontSize: 13,
+      lineHeight: 1.5,
+    }}
+  >
+    <strong>Motivo del rechazo:</strong>
+    <div style={{ marginTop: 4 }}>
+      {event.moderation_message || 'No se indicó un motivo.'}
+    </div>
+  </div>
                     ) : (
-                      <span
-                        style={{
-                          color: '#6f657f',
-                          fontSize: 13,
-                          fontWeight: 700,
-                        }}
-                      >
-                        En seguimiento
-                      </span>
-                    )}
+  <span
+    style={{
+      color: '#6f65f7',
+      fontSize: 13,
+      fontWeight: 700,
+    }}
+  >
+    En seguimiento
+  </span>
+)}
                   </div>
                 </article>
               );
