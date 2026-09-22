@@ -558,9 +558,9 @@ function handleNearbyEvents() {
           </div>
         ) : (
           <div className="emptyState">
-            <span>🔎</span><h3>No encontramos eventos con ese filtro</h3>
-            <p>Probá otra búsqueda o volvé a ver todos los planes.</p>
-            <button type="button" onClick={() => { setQuery(''); setActiveCategory('Todos'); }}>Ver todos los eventos</button>
+            <h3>{nearbyOnly ? '📍 No hay eventos cerca de tu ubicación por ahora' : '🔎 No encontramos eventos con ese filtro'}</h3>
+            <p>{nearbyOnly ? 'Probá ver todos los eventos de Comodoro.' : 'Probá otra búsqueda o volvé a ver todos los planes.'}</p>
+            <button type="button" onClick={() => { setQuery(''); setActiveCategory('Todos'); setNearbyOnly(false); setUserLatitude(null); setUserLongitude(null); }}>Ver todos los eventos</button>
           </div>
         )}
       </section>
