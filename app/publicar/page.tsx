@@ -42,7 +42,30 @@ if (userError || !user) {
   return;
 }
   const form = new FormData(formElement);
+const address = String(form.get('direccion') || '');
 
+let latitude: number | null = null;
+let longitude: number | null = null;
+
+try {
+  const geocodeResponse = await fetch('/api/geocode', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ address }),
+  });
+
+  if (geocodeResponse.ok) {
+    const coordinates = await geocodeResponse.json();
+    latitude = coordinates.latitude;
+    longitude = coordinates.longitude;
+  } else {
+    console.error('No se pudo geocodificar la dirección');
+  }
+} catch (geocodeError) {
+  console.error('Error obteniendo coordenadas:', geocodeError);
+}
 let coverImageUrl: string | null = null;
 
 if (imagenArchivo) {
@@ -74,6 +97,8 @@ const { error } = await supabase.from('events').insert({
     event_time: form.get('hora'),
     place: form.get('lugar'),
     address: form.get('direccion'),
+  latitude: latitude,
+longitude: longitude,
     entry_type: form.get('entrada'),
     price: form.get('precio') || null,
     description: form.get('descripcion'),
