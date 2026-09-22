@@ -194,7 +194,7 @@ longitude: event.longitude,
  const visibleEvents = useMemo(() => {
   const normalized = query.trim().toLocaleLowerCase('es');
 
-  return publishedEvents.filter((event) => {
+  const filteredEvents = publishedEvents.filter((event) => {
     const matchesCategory =
       activeCategory === 'Todos' || event.category === activeCategory;
 
@@ -236,6 +236,42 @@ longitude: event.longitude,
 
     return matchesCategory && matchesSearch && matchesNearby;
   });
+   if (
+  nearbyOnly &&
+  userLatitude !== null &&
+  userLongitude !== null
+) {
+  const toRad = (value: number) => (value * Math.PI) / 180;
+  const earthRadiusKm = 6371;
+
+  const getDistance = (event: EventItem) => {
+    if (event.latitude == null || event.longitude == null) {
+      return Infinity;
+    }
+
+    const dLat = toRad(event.latitude - userLatitude);
+    const dLon = toRad(event.longitude - userLongitude);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(userLatitude)) *
+        Math.cos(toRad(event.latitude)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    return (
+      earthRadiusKm *
+      2 *
+      Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    );
+  };
+
+  return [...filteredEvents].sort(
+    (a, b) => getDistance(a) - getDistance(b)
+  );
+}
+
+return filteredEvents;
 }, [
   query,
   activeCategory,
