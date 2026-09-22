@@ -43,7 +43,11 @@ async function rejectEvent(formData: FormData) {
   'use server';
 
   const eventId = String(formData.get('eventId') ?? '');
+const rejectionMessage = String(formData.get('moderationMessage') ?? '').trim();
 
+if (!rejectionMessage) {
+  throw new Error('Tenés que indicar el motivo del rechazo.');
+}
   const cookieStore = await cookies();
   const authenticated =
     cookieStore.get('qhc_admin_session')?.value === getAdminToken();
@@ -65,7 +69,10 @@ async function rejectEvent(formData: FormData) {
 
   const { error } = await supabase
     .from('events')
-    .update({ status: 'REJECTED' })
+    .update({
+  status: 'REJECTED',
+  moderation_message: rejectionMessage,
+})
     .eq('id', eventId)
     .eq('status', 'PENDING_REVIEW');
 
@@ -388,7 +395,23 @@ export default async function AdminEventPage({
 
   <form action={rejectEvent}>
     <input type="hidden" name="eventId" value={event.id} />
-
+<textarea
+  required
+  name="moderationMessage"
+  rows={3}
+  placeholder="Explicá el motivo del rechazo..."
+  style={{
+    width: '100%',
+    minWidth: 260,
+    boxSizing: 'border-box',
+    border: '1px solid #ddd5eb',
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 14,
+    resize: 'vertical',
+    marginBottom: 10,
+  }}
+/>
     <button
       type="submit"
       style={{
