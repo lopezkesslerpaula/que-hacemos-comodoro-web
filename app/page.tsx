@@ -1,6 +1,7 @@
 'use client';
 // GitHub conectado con Vercel
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 type EventItem = {
   id: string;
