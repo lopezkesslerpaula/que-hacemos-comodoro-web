@@ -11,6 +11,37 @@ export default function PubliciteAquiPage() {
 
   const [sending, setSending] = useState(false);
   const [message, setMessage] = useState('');
+
+      async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSending(true);
+    setMessage('');
+
+    const form = new FormData(e.currentTarget);
+
+    const { error } = await supabase
+      .from('advertising_requests')
+      .insert({
+        business_name: form.get('business_name'),
+        category: form.get('category'),
+        contact_name: form.get('contact_name'),
+        whatsapp: form.get('whatsapp'),
+        email: form.get('email'),
+        website_or_instagram: form.get('website_or_instagram'),
+        promotion_description: form.get('promotion_description'),
+      });
+
+    if (error) {
+      console.error(error);
+      setMessage('No pudimos enviar la solicitud. Intentá nuevamente.');
+      setSending(false);
+      return;
+    }
+
+    setMessage('¡Solicitud enviada correctamente!');
+    e.currentTarget.reset();
+    setSending(false);
+  }
   return (
     <main
       style={{
@@ -72,6 +103,7 @@ export default function PubliciteAquiPage() {
           </p>
 
           <form
+              onSubmit={handleSubmit}
             style={{
               display: 'grid',
               gap: 16,
@@ -80,6 +112,7 @@ export default function PubliciteAquiPage() {
             <label style={labelStyle}>
               Nombre del negocio
               <input
+                  name="business_name"
                 type="text"
                 required
                 placeholder="Ej. Restaurante Patagonia"
@@ -89,7 +122,7 @@ export default function PubliciteAquiPage() {
 
             <label style={labelStyle}>
               Rubro
-              <select required defaultValue="" style={inputStyle}>
+              <select name="category" required defaultValue="" style={inputStyle}>
                 <option value="" disabled>
                   Seleccionar rubro
                 </option>
@@ -107,6 +140,7 @@ export default function PubliciteAquiPage() {
             <label style={labelStyle}>
               Nombre de contacto
               <input
+                  name="contact_name"
                 type="text"
                 required
                 placeholder="Nombre y apellido"
@@ -117,6 +151,7 @@ export default function PubliciteAquiPage() {
             <label style={labelStyle}>
               WhatsApp
               <input
+                  name="whatsapp"
                 type="tel"
                 required
                 placeholder="Ej. 297 4000000"
@@ -127,6 +162,7 @@ export default function PubliciteAquiPage() {
             <label style={labelStyle}>
               Email
               <input
+                  name="email"
                 type="email"
                 required
                 placeholder="correo@ejemplo.com"
@@ -137,6 +173,7 @@ export default function PubliciteAquiPage() {
             <label style={labelStyle}>
               Instagram o página web
               <input
+                  name="website_or_instagram"
                 type="text"
                 placeholder="@tunegocio o sitio web"
                 style={inputStyle}
@@ -146,6 +183,7 @@ export default function PubliciteAquiPage() {
             <label style={labelStyle}>
               ¿Qué querés promocionar?
               <textarea
+                  name="promotion_description"
                 required
                 placeholder="Contanos brevemente qué querés promocionar..."
                 style={{
@@ -196,6 +234,11 @@ export default function PubliciteAquiPage() {
             >
               Solicitar publicidad
             </button>
+              {message && (
+  <p style={{ margin: 0, textAlign: 'center', fontWeight: 700 }}>
+    {message}
+  </p>
+)}
           </form>
         </div>
       </div>
