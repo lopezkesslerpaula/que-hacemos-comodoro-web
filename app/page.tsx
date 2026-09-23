@@ -492,6 +492,97 @@ function handleNearbyEvents() {
         </div>
       </section>
 
+
+      <section
+  style={{
+    maxWidth: 1180,
+    margin: '42px auto',
+    padding: '0 20px',
+  }}
+>
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-end',
+      gap: 16,
+      marginBottom: 16,
+      flexWrap: 'wrap',
+    }}
+  >
+    <div>
+      <span
+        style={{
+          fontSize: 12,
+          fontWeight: 900,
+          color: '#7c3aed',
+          letterSpacing: 1,
+        }}
+      >
+        PUBLICIDAD
+      </span>
+
+      <h2 style={{ margin: '6px 0 0' }}>
+        Negocios que te pueden interesar
+      </h2>
+    </div>
+
+    <Link
+      href="/publicite-aqui"
+      style={{
+        color: '#6d28d9',
+        fontWeight: 900,
+        textDecoration: 'none',
+      }}
+    >
+      ¿Tenés un negocio? Publicitá acá →
+    </Link>
+  </div>
+
+  <div
+    style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+      gap: 14,
+    }}
+  >
+    {[1, 2, 3].map((slot) => (
+      <div
+        key={slot}
+        style={{
+          minHeight: 150,
+          border: '1px solid #e9d5ff',
+          borderRadius: 18,
+          background: '#ffffff',
+          padding: 20,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          boxShadow: '0 8px 24px rgba(109, 40, 217, 0.06)',
+        }}
+      >
+        <span
+          style={{
+            fontSize: 11,
+            fontWeight: 900,
+            color: '#7c3aed',
+          }}
+        >
+          ESPACIO PUBLICITARIO
+        </span>
+
+        <div>
+          <h3 style={{ margin: '8px 0 6px' }}>
+            Tu negocio puede estar acá
+          </h3>
+          <p style={{ margin: 0, color: '#6b6475', fontSize: 14 }}>
+            Mostrá tu negocio a personas de Comodoro Rivadavia.
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
       <section className="section eventsSection" id="eventos">
         <div className="sectionHeading eventsHeading">
           <div><span className="sectionKicker">PRÓXIMOS PLANES</span><h2>Eventos para vos</h2></div>
