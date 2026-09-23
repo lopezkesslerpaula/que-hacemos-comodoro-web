@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-
+import { useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 export default function PubliciteAquiPage() {
   return (
     <main
