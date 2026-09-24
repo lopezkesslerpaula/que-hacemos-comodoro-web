@@ -127,7 +127,22 @@ export default async function AdminPage({
               </button>
             </form>
           </div>
-
+<div style={{ marginBottom: 20 }}>
+  <Link
+    href="/admin/publicidades"
+    style={{
+      display: 'inline-block',
+      background: '#6d28d9',
+      color: '#ffffff',
+      padding: '12px 18px',
+      borderRadius: 10,
+      fontWeight: 800,
+      textDecoration: 'none',
+    }}
+  >
+    Solicitudes de publicidad
+  </Link>
+</div>
           <section
             style={{
               background: '#fff',
