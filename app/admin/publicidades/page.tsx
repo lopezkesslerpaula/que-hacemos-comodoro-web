@@ -96,6 +96,22 @@ export default async function AdminPublicidadesPage() {
         <p style={{ margin: '4px 0' }}>
           <strong>Estado:</strong> {request.status}
         </p>
+        <Link
+  href={`/admin/publicidades/${request.id}`}
+  style={{
+    display: 'inline-block',
+    marginTop: 12,
+    background: '#6d28d9',
+    color: '#ffffff',
+    padding: '10px 14px',
+    borderRadius: 10,
+    fontWeight: 800,
+    textDecoration: 'none',
+    fontSize: 14,
+  }}
+>
+  Ver solicitud
+</Link>
       </div>
     ))}
   </div>
