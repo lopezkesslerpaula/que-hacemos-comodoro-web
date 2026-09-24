@@ -170,7 +170,16 @@ export default async function PublicidadDetallePage({
     marginBottom: 12,
   }}
 />
-
+<p
+  style={{
+    margin: '0 0 14px',
+    color: '#6b6475',
+    fontSize: 13,
+    fontWeight: 700,
+  }}
+>
+  Duración de la publicidad: 10 días
+</p>
   <button
     type="submit"
     style={{
