@@ -4,6 +4,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SECRET_KEY!
 );
+export const dynamic = 'force-dynamic';
 export default async function AdminPublicidadesPage() {
     const { data: requests, error } = await supabase
     .from('advertising_requests')
