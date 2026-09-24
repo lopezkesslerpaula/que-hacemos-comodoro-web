@@ -10,16 +10,17 @@ async function sendQuote(formData: FormData) {
   'use server';
 
   const id = String(formData.get('id'));
-  const price = Number(formData.get('price'));
+ const homePrice = Number(formData.get('home_price'));
+const popupPrice = Number(formData.get('popup_price'));
 
-  if (!price || price <= 0) {
-    throw new Error('Ingresá un presupuesto válido.');
-  }
-
+if (!homePrice || homePrice <= 0 || !popupPrice || popupPrice <= 0) {
+  throw new Error('Ingresá valores válidos para las dos opciones.');
+}
   const { error } = await supabase
     .from('advertising_requests')
     .update({
-      price,
+      home_price: homePrice,
+popup_price: popupPrice,
       status: 'QUOTE_SENT',
       payment_status: 'NOT_REQUESTED',
     })
@@ -116,32 +117,59 @@ export default async function PublicidadDetallePage({
           <form action={sendQuote} style={{ marginTop: 20 }}>
   <input type="hidden" name="id" value={request.id} />
 
-  <label
-    style={{
-      display: 'block',
-      fontWeight: 800,
-      marginBottom: 6,
-    }}
-  >
-    Presupuesto
-  </label>
+ <label
+  style={{
+    display: 'block',
+    fontWeight: 800,
+    marginBottom: 6,
+  }}
+>
+  Precio publicidad en pantalla de inicio
+</label>
 
-  <input
-    type="number"
-    name="price"
-    min="1"
-    required
-    placeholder="Ej. 20000"
-    style={{
-      width: '100%',
-      boxSizing: 'border-box',
-      border: '1px solid #ddd5eb',
-      borderRadius: 10,
-      padding: '12px',
-      fontSize: 14,
-      marginBottom: 12,
-    }}
-  />
+<input
+  type="number"
+  name="home_price"
+  min="1"
+  required
+  placeholder="Ej. 20000"
+  style={{
+    width: '100%',
+    boxSizing: 'border-box',
+    border: '1px solid #ddd5eb',
+    borderRadius: 10,
+    padding: '12px',
+    fontSize: 14,
+    marginBottom: 16,
+  }}
+/>
+
+<label
+  style={{
+    display: 'block',
+    fontWeight: 800,
+    marginBottom: 6,
+  }}
+>
+  Precio publicidad emergente
+</label>
+
+<input
+  type="number"
+  name="popup_price"
+  min="1"
+  required
+  placeholder="Ej. 35000"
+  style={{
+    width: '100%',
+    boxSizing: 'border-box',
+    border: '1px solid #ddd5eb',
+    borderRadius: 10,
+    padding: '12px',
+    fontSize: 14,
+    marginBottom: 12,
+  }}
+/>
 
   <button
     type="submit"
