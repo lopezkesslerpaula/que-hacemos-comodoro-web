@@ -241,6 +241,7 @@ setRequestId(data.id);
   <p style={{ margin: 0, textAlign: 'center', fontWeight: 700 }}>
     {message}
   </p>
+              )}
               {requestId && (
   <Link
     href={`/publicidad/${requestId}`}
