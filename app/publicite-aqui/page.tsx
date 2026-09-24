@@ -11,6 +11,7 @@ export default function PubliciteAquiPage() {
 
   const [sending, setSending] = useState(false);
   const [message, setMessage] = useState('');
+    const [requestId, setRequestId] = useState<string | null>(null);
 
       async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,17 +20,19 @@ export default function PubliciteAquiPage() {
 
     const form = new FormData(e.currentTarget);
 
-    const { error } = await supabase
-      .from('advertising_requests')
-      .insert({
-        business_name: form.get('business_name'),
-        category: form.get('category'),
-        contact_name: form.get('contact_name'),
-        whatsapp: form.get('whatsapp'),
-        email: form.get('email'),
-        website_or_instagram: form.get('website_or_instagram'),
-        promotion_description: form.get('promotion_description'),
-      });
+    const { data, error } = await supabase
+  .from('advertising_requests')
+  .insert({
+    business_name: form.get('business_name'),
+    category: form.get('category'),
+    contact_name: form.get('contact_name'),
+    whatsapp: form.get('whatsapp'),
+    email: form.get('email'),
+    website_or_instagram: form.get('website_or_instagram'),
+    promotion_description: form.get('promotion_description'),
+  })
+  .select('id')
+  .single();
 
     if (error) {
       console.error(error);
@@ -37,7 +40,7 @@ export default function PubliciteAquiPage() {
       setSending(false);
       return;
     }
-
+setRequestId(data.id);
     setMessage('¡Solicitud enviada correctamente!');
     e.currentTarget.reset();
     setSending(false);
@@ -238,6 +241,21 @@ export default function PubliciteAquiPage() {
   <p style={{ margin: 0, textAlign: 'center', fontWeight: 700 }}>
     {message}
   </p>
+              {requestId && (
+  <Link
+    href={`/publicidad/${requestId}`}
+    style={{
+      display: 'block',
+      marginTop: 14,
+      textAlign: 'center',
+      fontWeight: 800,
+      color: '#6d28d9',
+      textDecoration: 'none',
+    }}
+  >
+    Ver estado de mi solicitud →
+  </Link>
+)}
 )}
           </form>
         </div>
