@@ -6,18 +6,27 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SECRET_KEY!
 );
-async function approveRequest(formData: FormData) {
+async function sendQuote(formData: FormData) {
   'use server';
 
   const id = String(formData.get('id'));
+  const price = Number(formData.get('price'));
+
+  if (!price || price <= 0) {
+    throw new Error('Ingresá un presupuesto válido.');
+  }
 
   const { error } = await supabase
     .from('advertising_requests')
-    .update({ status: 'APPROVED' })
+    .update({
+      price,
+      status: 'QUOTE_SENT',
+      payment_status: 'NOT_REQUESTED',
+    })
     .eq('id', id);
 
   if (error) {
-    throw new Error('No se pudo aprobar la solicitud.');
+    throw new Error('No se pudo enviar el presupuesto.');
   }
 
   revalidatePath(`/admin/publicidades/${id}`);
@@ -104,8 +113,35 @@ export default async function PublicidadDetallePage({
           <p><strong>Instagram o página web:</strong> {request.website_or_instagram || 'No informado'}</p>
           <p><strong>Qué quiere promocionar:</strong> {request.promotion_description}</p>
           <p><strong>Estado:</strong> {request.status}</p>
-          <form action={approveRequest} style={{ marginTop: 20 }}>
+          <form action={sendQuote} style={{ marginTop: 20 }}>
   <input type="hidden" name="id" value={request.id} />
+
+  <label
+    style={{
+      display: 'block',
+      fontWeight: 800,
+      marginBottom: 6,
+    }}
+  >
+    Presupuesto
+  </label>
+
+  <input
+    type="number"
+    name="price"
+    min="1"
+    required
+    placeholder="Ej. 20000"
+    style={{
+      width: '100%',
+      boxSizing: 'border-box',
+      border: '1px solid #ddd5eb',
+      borderRadius: 10,
+      padding: '12px',
+      fontSize: 14,
+      marginBottom: 12,
+    }}
+  />
 
   <button
     type="submit"
@@ -120,7 +156,7 @@ export default async function PublicidadDetallePage({
       cursor: 'pointer',
     }}
   >
-    Aprobar solicitud
+    Enviar presupuesto
   </button>
 </form>
         </div>
