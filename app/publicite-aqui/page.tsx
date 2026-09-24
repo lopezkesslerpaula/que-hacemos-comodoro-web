@@ -257,7 +257,7 @@ setRequestId(data.id);
     Ver estado de mi solicitud →
   </Link>
 )}
-)}
+
           </form>
         </div>
       </div>
