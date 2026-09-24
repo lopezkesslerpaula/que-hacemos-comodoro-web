@@ -1,12 +1,28 @@
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 import { notFound } from 'next/navigation';
-
+import { revalidatePath } from 'next/cache';
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SECRET_KEY!
 );
+async function approveRequest(formData: FormData) {
+  'use server';
 
+  const id = String(formData.get('id'));
+
+  const { error } = await supabase
+    .from('advertising_requests')
+    .update({ status: 'APPROVED' })
+    .eq('id', id);
+
+  if (error) {
+    throw new Error('No se pudo aprobar la solicitud.');
+  }
+
+  revalidatePath(`/admin/publicidades/${id}`);
+  revalidatePath('/admin/publicidades');
+}
 export default async function PublicidadDetallePage({
   params,
 }: {
@@ -88,6 +104,25 @@ export default async function PublicidadDetallePage({
           <p><strong>Instagram o página web:</strong> {request.website_or_instagram || 'No informado'}</p>
           <p><strong>Qué quiere promocionar:</strong> {request.promotion_description}</p>
           <p><strong>Estado:</strong> {request.status}</p>
+          <form action={approveRequest} style={{ marginTop: 20 }}>
+  <input type="hidden" name="id" value={request.id} />
+
+  <button
+    type="submit"
+    style={{
+      border: 0,
+      borderRadius: 10,
+      background: '#6d28d9',
+      color: '#ffffff',
+      padding: '12px 18px',
+      fontWeight: 800,
+      fontSize: 14,
+      cursor: 'pointer',
+    }}
+  >
+    Aprobar solicitud
+  </button>
+</form>
         </div>
       </div>
     </main>
