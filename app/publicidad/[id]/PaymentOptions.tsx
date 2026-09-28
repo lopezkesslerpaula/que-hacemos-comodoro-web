@@ -1,12 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
-);
 
 type Props = {
   requestId: string;
@@ -27,16 +21,21 @@ export default function PaymentOptions({
     setSaving(true);
     setMessage('');
 
-    const { error } = await supabase
-      .from('advertising_requests')
-      .update({
-        selected_ad_type: adType,
-        price: price,
-      })
-      .eq('id', requestId);
+   const response = await fetch('/api/advertising/select-option', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    requestId,
+    adType,
+  }),
+});
 
-    if (error) {
-      console.error(error);
+const result = await response.json();
+
+    if (!response.ok) {
+      console.error(result);
       setMessage('No pudimos guardar la opción. Intentá nuevamente.');
       setSaving(false);
       return;
