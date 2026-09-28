@@ -1,16 +1,19 @@
 import { MercadoPagoConfig, Preference } from 'mercadopago';
-
+import { createClient } from '@supabase/supabase-js';
 const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN!,
 });
-
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SECRET_KEY!
+);
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
     const requestId = String(body.requestId || '');
     const adType = String(body.adType || '');
-    const amount = Number(body.amount);
+    
 
     if (!requestId) {
       return Response.json(
@@ -26,12 +29,34 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!Number.isFinite(amount) || amount <= 0) {
-      return Response.json(
-        { error: 'El importe no es válido.' },
-        { status: 400 }
-      );
-    }
+   const { data: advertisingRequest, error: readError } = await supabase
+  .from('advertising_requests')
+  .select('id, selected_ad_type, price')
+  .eq('id', requestId)
+  .single();
+
+if (readError || !advertisingRequest) {
+  return Response.json(
+    { error: 'No se encontró la solicitud.' },
+    { status: 404 }
+  );
+}
+
+if (advertisingRequest.selected_ad_type !== adType) {
+  return Response.json(
+    { error: 'La opción seleccionada no coincide con la solicitud.' },
+    { status: 400 }
+  );
+}
+
+const amount = Number(advertisingRequest.price);
+
+if (!Number.isFinite(amount) || amount <= 0) {
+  return Response.json(
+    { error: 'La solicitud no tiene un importe válido.' },
+    { status: 400 }
+  );
+}
 
     const preference = new Preference(client);
 
