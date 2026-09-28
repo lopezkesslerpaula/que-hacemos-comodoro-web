@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 export default function PubliciteAquiPage() {
     const supabase = createClient(
@@ -12,9 +12,19 @@ export default function PubliciteAquiPage() {
   const [sending, setSending] = useState(false);
   const [message, setMessage] = useState('');
     const [requestId, setRequestId] = useState<string | null>(null);
+const [user, setUser] = useState<any>(null);
 
+    useEffect(() => {
+  supabase.auth.getUser().then(({ data }) => {
+    setUser(data.user);
+  });
+}, []);
       async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+          if (!user) {
+  setMessage('Tenés que iniciar sesión para solicitar publicidad.');
+  return;
+}
     setSending(true);
     setMessage('');
 
@@ -30,6 +40,7 @@ export default function PubliciteAquiPage() {
     email: form.get('email'),
     website_or_instagram: form.get('website_or_instagram'),
     promotion_description: form.get('promotion_description'),
+      user_id: user.id,
   })
   .select('id')
   .single();
