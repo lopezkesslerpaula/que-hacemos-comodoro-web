@@ -82,32 +82,32 @@ export default async function PublicidadEstadoPage({
             padding: 22,
           }}
         >
-          {!quoteReady ? (
-            <>
-              <h2 style={{ marginTop: 0 }}>Solicitud recibida</h2>
-              <p style={{ lineHeight: 1.6, marginBottom: 0 }}>
-                Estamos revisando tu solicitud. Cuando el presupuesto esté
-                disponible, vas a poder elegir el tipo de publicidad desde
-                esta misma pantalla.
-              </p>
-            </>
-          ) : (
-            <>
-              <h2 style={{ marginTop: 0 }}>Elegí tu publicidad</h2>
+         {!quoteReady ? (
+  <div>
+    <h2 style={{ marginTop: 0 }}>Solicitud recibida</h2>
+    <p style={{ lineHeight: 1.6, marginBottom: 0 }}>
+      Estamos revisando tu solicitud. Cuando el presupuesto esté
+      disponible, vas a poder elegir el tipo de publicidad desde
+      esta misma pantalla.
+    </p>
+  </div>
+) : (
+  <div>
+    <h2 style={{ marginTop: 0 }}>Elegí tu publicidad</h2>
 
-              <p style={{ lineHeight: 1.6 }}>
-                Tu presupuesto ya está disponible. Elegí una de las dos
-                opciones para continuar con el pago.
-              </p>
+    <p style={{ lineHeight: 1.6 }}>
+      Tu presupuesto ya está disponible. Elegí una de las dos
+      opciones para continuar con el pago.
+    </p>
 
-              <>
-  <PaymentOptions
-    requestId={request.id}
-    homePrice={Number(request.home_price)}
-    popupPrice={Number(request.popup_price)}
-  />
-</>
-          )}
+    <PaymentOptions
+      requestId={request.id}
+      homePrice={Number(request.home_price)}
+      popupPrice={Number(request.popup_price)}
+    />
+  </div>
+)}
+          
         </section>
       </div>
     </main>
