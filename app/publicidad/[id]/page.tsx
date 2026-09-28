@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 import { notFound } from 'next/navigation';
-
+import PaymentOptions from './PaymentOptions';
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SECRET_KEY!
@@ -100,58 +100,13 @@ export default async function PublicidadEstadoPage({
                 opciones para continuar con el pago.
               </p>
 
-              <div
-                style={{
-                  display: 'grid',
-                  gap: 14,
-                  marginTop: 20,
-                }}
-              >
-                <div
-                  style={{
-                    border: '1px solid #ddd5eb',
-                    borderRadius: 12,
-                    padding: 18,
-                  }}
-                >
-                  <strong>Publicidad en pantalla de inicio</strong>
-                  <div
-                    style={{
-                      marginTop: 8,
-                      fontSize: 24,
-                      fontWeight: 900,
-                    }}
-                  >
-                    ${Number(request.home_price).toLocaleString('es-AR')}
-                  </div>
-                  <p style={{ marginBottom: 0, color: '#6b6475' }}>
-                    Duración: 10 días
-                  </p>
-                </div>
-
-                <div
-                  style={{
-                    border: '1px solid #ddd5eb',
-                    borderRadius: 12,
-                    padding: 18,
-                  }}
-                >
-                  <strong>Publicidad emergente</strong>
-                  <div
-                    style={{
-                      marginTop: 8,
-                      fontSize: 24,
-                      fontWeight: 900,
-                    }}
-                  >
-                    ${Number(request.popup_price).toLocaleString('es-AR')}
-                  </div>
-                  <p style={{ marginBottom: 0, color: '#6b6475' }}>
-                    Duración: 10 días
-                  </p>
-                </div>
-              </div>
-            </>
+              <>
+  <PaymentOptions
+    requestId={request.id}
+    homePrice={Number(request.home_price)}
+    popupPrice={Number(request.popup_price)}
+  />
+</>
           )}
         </section>
       </div>
