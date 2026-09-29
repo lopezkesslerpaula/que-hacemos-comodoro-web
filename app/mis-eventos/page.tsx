@@ -202,20 +202,7 @@ async function handleSignOut() {
           >
             + Publicar evento
           </Link>
-  <Link
-  href="/mis-publicidades"
-  style={{
-    background: '#ffffff',
-    color: '#6f32e8',
-    textDecoration: 'none',
-    padding: '13px 18px',
-    borderRadius: 12,
-    border: '1px solid #d8c5f7',
-    fontWeight: 800,
-  }}
->
-  Mis publicidades
-</Link>
+
   <button
   type="button"
   onClick={handleSignOut}
