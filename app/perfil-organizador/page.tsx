@@ -316,6 +316,69 @@ async function handleLogout() {
                 </Link>
               </div>
             </div>
+            <div
+  style={{
+    background: '#fff',
+    borderRadius: 18,
+    padding: 24,
+    marginTop: 16,
+    boxShadow: '0 12px 35px rgba(70, 42, 120, 0.08)',
+  }}
+>
+  <h2
+    style={{
+      margin: '0 0 8px',
+      fontSize: 21,
+    }}
+  >
+    Gestión de publicidades
+  </h2>
+
+  <p
+    style={{
+      color: '#6b657f',
+      margin: '0 0 20px',
+    }}
+  >
+    Consultá tus solicitudes o solicitá una nueva publicidad.
+  </p>
+
+  <div
+    style={{
+      display: 'flex',
+      gap: 12,
+      flexWrap: 'wrap',
+    }}
+  >
+    <Link
+      href="/mis-publicidades"
+      style={{
+        background: '#6f32e8',
+        color: '#fff',
+        textDecoration: 'none',
+        padding: '13px 18px',
+        borderRadius: 11,
+        fontWeight: 800,
+      }}
+    >
+      Ver mis publicidades
+    </Link>
+
+    <Link
+      href="/publicite-aqui"
+      style={{
+        background: '#efe8ff',
+        color: '#6f32e8',
+        textDecoration: 'none',
+        padding: '13px 18px',
+        borderRadius: 11,
+        fontWeight: 800,
+      }}
+    >
+      + Solicitar publicidad
+    </Link>
+  </div>
+</div>
           </>
         )}
       </div>
