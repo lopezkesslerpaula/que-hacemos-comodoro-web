@@ -75,6 +75,7 @@ if (!Number.isFinite(amount) || amount <= 0) {
           },
         ],
         external_reference: `advertising:${requestId}:${adType}`,
+        notification_url: 'https://que-hacemos-comodoro-web.vercel.app/api/mercadopago/webhook',
       },
     });
 
