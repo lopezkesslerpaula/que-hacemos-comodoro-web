@@ -4,6 +4,20 @@ import {
   InvalidWebhookSignatureError,
 } from 'mercadopago';
 
+import { MercadoPagoConfig, Payment } from 'mercadopago';
+import { createClient } from '@supabase/supabase-js';
+
+const mercadoPagoClient = new MercadoPagoConfig({
+  accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN!,
+});
+
+const paymentClient = new Payment(mercadoPagoClient);
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SECRET_KEY!
+);
+
 export async function POST(request: Request) {
   try {
     const secret = process.env.MERCADOPAGO_WEBHOOK_SECRET;
@@ -28,7 +42,43 @@ export async function POST(request: Request) {
       secret,
     });
 
-    return NextResponse.json({ ok: true });
+    if (!dataId) {
+  return NextResponse.json({ ok: true });
+}
+
+const payment = await paymentClient.get({
+  id: Number(dataId),
+});
+
+if (payment.status !== 'approved') {
+  return NextResponse.json({ ok: true });
+}
+
+const externalReference = payment.external_reference || '';
+
+if (!externalReference.startsWith('advertising:')) {
+  return NextResponse.json({ ok: true });
+}
+
+const [, requestId] = externalReference.split(':');
+
+if (!requestId) {
+  return NextResponse.json({ ok: true });
+}
+
+const { error: updateError } = await supabase
+  .from('advertising_requests')
+  .update({
+    payment_status: 'PAID',
+  })
+  .eq('id', requestId);
+
+if (updateError) {
+  console.error('Error actualizando pago de publicidad:', updateError);
+  throw updateError;
+}
+
+return NextResponse.json({ ok: true });
   } catch (error) {
     if (error instanceof InvalidWebhookSignatureError) {
       return NextResponse.json(
