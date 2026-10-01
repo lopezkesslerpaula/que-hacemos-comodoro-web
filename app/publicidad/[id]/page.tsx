@@ -89,7 +89,23 @@ export default async function PublicidadEstadoPage({
     <p style={{ lineHeight: 1.6, marginBottom: 0 }}>
       Tu pago fue recibido correctamente. Tu publicidad ya está confirmada.
     </p>
-  </div>
+  
+          <Link
+  href={`/publicidad/${request.id}/crear`}
+  style={{
+    display: "inline-block",
+    marginTop: 18,
+    background: "#6d28d9",
+    color: "#ffffff",
+    padding: "12px 18px",
+    borderRadius: 10,
+    textDecoration: "none",
+    fontWeight: 700,
+  }}
+>
+  Crear mi publicidad
+</Link>
+    </div>
 ) : !quoteReady ? (
   <div>
     <h2 style={{ marginTop: 0 }}>Solicitud recibida</h2>
