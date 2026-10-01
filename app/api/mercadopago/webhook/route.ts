@@ -55,6 +55,7 @@ if (payment.status !== 'approved') {
 }
 
 const externalReference = payment.external_reference || '';
+    console.log('WEBHOOK external_reference:', externalReference);
 
 if (!externalReference.startsWith('advertising:')) {
   return NextResponse.json({ ok: true });
