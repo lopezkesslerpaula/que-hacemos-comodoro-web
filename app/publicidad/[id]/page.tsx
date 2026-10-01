@@ -91,7 +91,7 @@ export default async function PublicidadEstadoPage({
   </p>
 </div>
 ) : (
-          {!quoteReady ? (
+        ({!quoteReady ? (
   <div>
     <h2 style={{ marginTop: 0 }}>Solicitud recibida</h2>
     <p style={{ lineHeight: 1.6, marginBottom: 0 }}>
@@ -115,7 +115,7 @@ export default async function PublicidadEstadoPage({
       popupPrice={Number(request.popup_price)}
     />
   </div>
-)}
+))}
           )}
           
         </section>
