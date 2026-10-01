@@ -28,6 +28,7 @@ export default async function PublicidadEstadoPage({
     request.status === 'QUOTE_SENT' &&
     request.home_price != null &&
     request.popup_price != null;
+  const paymentPaid = request.payment_status === 'PAID';
 
   return (
     <main
@@ -82,7 +83,15 @@ export default async function PublicidadEstadoPage({
             padding: 22,
           }}
         >
-         {!quoteReady ? (
+   {paymentPaid ? (
+      <div>
+  <h2 style={{ marginTop: 0 }}>Pago acreditado</h2>
+  <p style={{ lineHeight: 1.6, marginBottom: 0 }}>
+    Tu pago fue recibido correctamente. Tu publicidad ya está confirmada.
+  </p>
+</div>
+) : (
+          {!quoteReady ? (
   <div>
     <h2 style={{ marginTop: 0 }}>Solicitud recibida</h2>
     <p style={{ lineHeight: 1.6, marginBottom: 0 }}>
@@ -107,6 +116,7 @@ export default async function PublicidadEstadoPage({
     />
   </div>
 )}
+          )}
           
         </section>
       </div>
