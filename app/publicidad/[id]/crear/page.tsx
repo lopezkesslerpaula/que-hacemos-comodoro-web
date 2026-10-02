@@ -21,7 +21,7 @@ export default function CrearPublicidadPage() {
     setSending(true);
     setMessage("");
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("advertising_requests")
       .update({
         ad_title: title,
@@ -31,7 +31,12 @@ export default function CrearPublicidadPage() {
         ad_status: "SUBMITTED",
       })
       .eq("id", requestId);
-
+      .select();
+if (!data || data.length === 0) {
+  setMessage("No se encontró la solicitud para actualizar.");
+  setSending(false);
+  return;
+}
     if (error) {
       console.error(error);
       setMessage("No se pudo enviar la publicidad. Intentá nuevamente.");
