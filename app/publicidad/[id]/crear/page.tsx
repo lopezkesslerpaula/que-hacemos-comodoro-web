@@ -13,14 +13,41 @@ export default function CrearPublicidadPage() {
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [website, setWebsite] = useState("");
-  
+  const [imageFile, setImageFile] = useState<File | null>(null);
       const [sending, setSending] = useState(false);
   const [message, setMessage] = useState("");
 
   async function handleSubmit() {
     setSending(true);
     setMessage("");
+      if (!imageFile) {
+  setMessage("Seleccioná una imagen para la publicidad.");
+  setSending(false);
+  return;
+}
+let imageUrl = null;
 
+if (imageFile) {
+  const fileExt = imageFile.name.split(".").pop();
+  const fileName = `${requestId}-${Date.now()}.${fileExt}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("advertising-images")
+    .upload(fileName, imageFile);
+
+  if (uploadError) {
+    console.error(uploadError);
+    setMessage("No se pudo subir la imagen. Intentá nuevamente.");
+    setSending(false);
+    return;
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from("advertising-images")
+    .getPublicUrl(fileName);
+
+  imageUrl = publicUrlData.publicUrl;
+}
     const { data, error } = await supabase
       .from("advertising_requests")
       .update({
@@ -28,6 +55,7 @@ export default function CrearPublicidadPage() {
         promotion_description: description,
         whatsapp: whatsapp,
         website_or_instagram: website,
+          image_url: imageUrl,
         ad_status: "SUBMITTED",
       })
       .eq("id", requestId)
@@ -131,7 +159,11 @@ onChange={(e) => setDescription(e.target.value)}
     <label style={{ display: "block", fontWeight: 700, marginBottom: 6 }}>
       Imagen de la publicidad
     </label>
-    <input type="file" accept="image/*" />
+    <input
+  type="file"
+  accept="image/*"
+  onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+/>
   </div>
 
   <div style={{ marginTop: 18 }}>
