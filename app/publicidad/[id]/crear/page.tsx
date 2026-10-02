@@ -1,5 +1,47 @@
+"use client";
+
+import { useState } from "react";
+import { useParams } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 export default function CrearPublicidadPage() {
+    const [title, setTitle] = useState("");
+    const params = useParams();
+  const requestId = Number(params.id);
+  const [description, setDescription] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [website, setWebsite] = useState("");
   return (
+      const [sending, setSending] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function handleSubmit() {
+    setSending(true);
+    setMessage("");
+
+    const { error } = await supabase
+      .from("advertising_requests")
+      .update({
+        ad_title: title,
+        promotion_description: description,
+        whatsapp: whatsapp,
+        website_or_instagram: website,
+        ad_status: "SUBMITTED",
+      })
+      .eq("id", requestId);
+
+    if (error) {
+      console.error(error);
+      setMessage("No se pudo enviar la publicidad. Intentá nuevamente.");
+      setSending(false);
+      return;
+    }
+
+    setMessage("Publicidad enviada para revisión.");
+    setSending(false);
+  }
     <main
       style={{
         minHeight: "100vh",
@@ -46,6 +88,8 @@ export default function CrearPublicidadPage() {
     </label>
     <input
       type="text"
+      value={title}
+onChange={(e) => setTitle(e.target.value)}
       placeholder="Ej: Clases de pilates"
       style={{
         width: "100%",
@@ -63,6 +107,8 @@ export default function CrearPublicidadPage() {
     </label>
     <textarea
       rows={5}
+      value={description}
+onChange={(e) => setDescription(e.target.value)}
       placeholder="Contanos qué querés promocionar"
       style={{
         width: "100%",
@@ -88,6 +134,9 @@ export default function CrearPublicidadPage() {
     </label>
     <input
       type="text"
+    
+      value={whatsapp}
+onChange={(e) => setWhatsapp(e.target.value)}
       placeholder="Ej: 297 4000000"
       style={{
         width: "100%",
@@ -105,6 +154,8 @@ export default function CrearPublicidadPage() {
     </label>
     <input
       type="text"
+      value={website}
+onChange={(e) => setWebsite(e.target.value)}
       placeholder="Ej: @mi_comercio"
       style={{
         width: "100%",
@@ -118,6 +169,8 @@ export default function CrearPublicidadPage() {
 
   <button
     type="button"
+    onClick={handleSubmit}
+disabled={sending}
     style={{
       marginTop: 24,
       background: "#6d28d9",
@@ -129,8 +182,13 @@ export default function CrearPublicidadPage() {
       cursor: "pointer",
     }}
   >
-    Enviar publicidad para revisión
+    {sending ? "Enviando..." : "Enviar publicidad para revisión"}
   </button>
+          {message && (
+  <p style={{ marginTop: 14, fontWeight: 700 }}>
+    {message}
+  </p>
+)}
 </div>
       </div>
     </main>
