@@ -13,7 +13,7 @@ export default function CrearPublicidadPage() {
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [website, setWebsite] = useState("");
-  return (
+  
       const [sending, setSending] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -42,6 +42,7 @@ export default function CrearPublicidadPage() {
     setMessage("Publicidad enviada para revisión.");
     setSending(false);
   }
+return (
     <main
       style={{
         minHeight: "100vh",
