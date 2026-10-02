@@ -172,7 +172,7 @@ onChange={(e) => setWebsite(e.target.value)}
       }}
     />
   </div>
-
+{message !== "Publicidad enviada para revisión." && (
   <button
     type="button"
     onClick={handleSubmit}
@@ -189,7 +189,9 @@ disabled={sending}
     }}
   >
     {sending ? "Enviando..." : "Enviar publicidad para revisión"}
+
   </button>
+    )}
           {message && (
   <p style={{ marginTop: 14, fontWeight: 700 }}>
     {message}
