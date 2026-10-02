@@ -30,7 +30,7 @@ export default function CrearPublicidadPage() {
         website_or_instagram: website,
         ad_status: "SUBMITTED",
       })
-      .eq("id", requestId);
+      .eq("id", requestId)
       .select();
 if (!data || data.length === 0) {
   setMessage("No se encontró la solicitud para actualizar.");
