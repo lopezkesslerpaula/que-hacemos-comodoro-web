@@ -106,6 +106,11 @@ export default async function PublicidadDetallePage({
           }}
         >
           <h2 style={{ marginTop: 0 }}>{request.business_name}</h2>
+          {request.ad_title && (
+  <p style={{ marginTop: 8 }}>
+    <strong>Título de la publicidad:</strong> {request.ad_title}
+  </p>
+)}
 
           <p><strong>Rubro:</strong> {request.category}</p>
           <p><strong>Contacto:</strong> {request.contact_name}</p>
@@ -113,6 +118,21 @@ export default async function PublicidadDetallePage({
           <p><strong>Email:</strong> {request.email}</p>
           <p><strong>Instagram o página web:</strong> {request.website_or_instagram || 'No informado'}</p>
           <p><strong>Qué quiere promocionar:</strong> {request.promotion_description}</p>
+          {request.image_url && (
+  <div style={{ marginTop: 16, marginBottom: 16 }}>
+    <p><strong>Imagen de la publicidad:</strong></p>
+    <img
+      src={request.image_url}
+      alt="Imagen de la publicidad"
+      style={{
+        width: "100%",
+        maxWidth: 400,
+        height: "auto",
+        borderRadius: 12,
+      }}
+    />
+  </div>
+)}
           <p><strong>Estado:</strong> {request.status}</p>
           <form action={sendQuote} style={{ marginTop: 20 }}>
   <input type="hidden" name="id" value={request.id} />
