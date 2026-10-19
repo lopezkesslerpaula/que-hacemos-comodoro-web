@@ -2,12 +2,32 @@ import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 import { notFound } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { cookies } from 'next/headers';
+import { createHash } from 'crypto';
+async function verificarAdmin() {
+  const password = process.env.ADMIN_ACCESS_PASSWORD;
+
+  if (!password) {
+    throw new Error("ADMIN_ACCESS_PASSWORD no está configurada.");
+  }
+
+  const token = createHash("sha256")
+    .update(password)
+    .digest("hex");
+
+  const cookieStore = await cookies();
+
+  return cookieStore.get("qhc_admin_session")?.value === token;
+}
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SECRET_KEY!
 );
 async function sendQuote(formData: FormData) {
   'use server';
+    if (!(await verificarAdmin())) {
+    throw new Error("No tenés autorización para enviar presupuestos.");
+  }
 
   const id = String(formData.get('id'));
  const homePrice = Number(formData.get('home_price'));
@@ -38,6 +58,9 @@ export default async function PublicidadDetallePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+    if (!(await verificarAdmin())) {
+    redirect("/admin");
+  }
   const { id } = await params;
 
   const { data: request, error } = await supabase
