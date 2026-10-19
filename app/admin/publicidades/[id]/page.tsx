@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { createHash } from 'crypto';
