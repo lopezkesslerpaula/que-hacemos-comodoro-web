@@ -100,7 +100,7 @@ const adStatus = request.ad_status;
 {(adStatus === 'DRAFT' || !adStatus) && (
    
 <Link
-  <Link
+  
   href={`/publicidad/${request.id}/crear`}
   style={{
     display: "inline-block",
