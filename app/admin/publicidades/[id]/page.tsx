@@ -53,6 +53,43 @@ popup_price: popupPrice,
   revalidatePath(`/admin/publicidades/${id}`);
   revalidatePath('/admin/publicidades');
 }
+
+
+async function aprobarPublicidad(formData: FormData) {
+  "use server";
+
+  if (!(await verificarAdmin())) {
+    throw new Error("No tenés autorización para aprobar publicidades.");
+  }
+
+  const id = String(formData.get("id") ?? "");
+
+  if (!id) {
+    throw new Error("Falta identificar la publicidad.");
+  }
+
+  const { data, error } = await supabase
+    .from("advertising_requests")
+    .update({
+      ad_status: "APPROVED",
+    })
+    .eq("id", id)
+    .eq("ad_status", "SUBMITTED")
+    .eq("payment_status", "PAID")
+    .select("id");
+
+  if (error) {
+    throw new Error("No se pudo aprobar la publicidad.");
+  }
+
+  if (!data || data.length === 0) {
+    throw new Error("La publicidad debe estar enviada y pagada para aprobarse.");
+  }
+
+  revalidatePath(`/admin/publicidades/${id}`);
+  revalidatePath("/admin/publicidades");
+}
+
 export default async function PublicidadDetallePage({
   params,
 }: {
@@ -239,6 +276,30 @@ export default async function PublicidadDetallePage({
     Enviar presupuesto
   </button>
 </form>
+
+          
+{request.ad_status === "SUBMITTED" &&
+  request.payment_status === "PAID" && (
+    <form action={aprobarPublicidad} style={{ marginTop: 16 }}>
+      <input type="hidden" name="id" value={request.id} />
+      <button
+        type="submit"
+        style={{
+          border: 0,
+          borderRadius: 10,
+          background: "#16a34a",
+          color: "#ffffff",
+          padding: "12px 18px",
+          fontWeight: 800,
+          fontSize: 14,
+          cursor: "pointer",
+        }}
+      >
+        Aprobar publicidad
+      </button>
+    </form>
+  )}
+
         </div>
       </div>
     </main>
