@@ -107,6 +107,16 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [nearbyOnly, setNearbyOnly] = useState(false);
 const [userLatitude, setUserLatitude] = useState<number | null>(null);
+
+const [advertisements, setAdvertisements] = useState<{
+  id: string;
+  business_name: string;
+  ad_title: string | null;
+  promotion_description: string | null;
+  image_url: string | null;
+  whatsapp: string | null;
+  website_or_instagram: string | null;
+}[]>([]);
 const [userLongitude, setUserLongitude] = useState<number | null>(null);
   useEffect(() => {
   async function checkSession() {
@@ -192,6 +202,26 @@ longitude: event.longitude,
 
   loadPublishedEvents();
 }, []);
+  
+useEffect(() => {
+  async function loadAdvertisements() {
+    const { data, error } = await supabase
+      .from("advertising_requests")
+      .select("id, business_name, ad_title, promotion_description, image_url, whatsapp, website_or_instagram")
+      .eq("ad_status", "APPROVED")
+      .eq("payment_status", "PAID");
+
+    if (error) {
+      console.error("Error cargando publicidades:", error);
+      return;
+    }
+
+    setAdvertisements(data ?? []);
+  }
+
+  loadAdvertisements();
+}, []);
+
  const visibleEvents = useMemo(() => {
   const normalized = query.trim().toLocaleLowerCase('es');
 
