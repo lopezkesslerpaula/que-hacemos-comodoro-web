@@ -25,11 +25,9 @@ export default function MisPublicidadesPage() {
         return;
       }
 
-      const { data, error } = await supabase
-        .from('advertising_requests')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      
+const { data, error } = await supabase
+  .rpc('mis_solicitudes_publicidad');
 
       if (!error && data) {
         setRequests(data);
