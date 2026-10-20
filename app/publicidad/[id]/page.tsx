@@ -14,11 +14,14 @@ export default async function PublicidadEstadoPage({
 }) {
   const { id } = await params;
 
-  const { data: request, error } = await supabase
-    .from('advertising_requests')
-    .select('*')
-    .eq('id', id)
-    .single();
+  
+const { data: requestData, error } = await supabase
+  .rpc('mi_solicitud_publicidad', {
+    solicitud_id: Number(id),
+  });
+
+const request = requestData?.[0];
+
 
   if (error || !request) {
     notFound();
@@ -29,6 +32,9 @@ export default async function PublicidadEstadoPage({
     request.home_price != null &&
     request.popup_price != null;
   const paymentPaid = request.payment_status === 'PAID';
+  
+const adStatus = request.ad_status;
+
 
   return (
     <main
@@ -90,7 +96,11 @@ export default async function PublicidadEstadoPage({
       Tu pago fue recibido correctamente. Tu publicidad ya está confirmada.
     </p>
   
-          <Link
+     
+{(adStatus === 'DRAFT' || !adStatus) && (
+   
+<Link
+  <Link
   href={`/publicidad/${request.id}/crear`}
   style={{
     display: "inline-block",
@@ -103,8 +113,27 @@ export default async function PublicidadEstadoPage({
     fontWeight: 700,
   }}
 >
+
+
+
+
   Crear mi publicidad
 </Link>
+  
+)}
+
+{adStatus === 'APPROVED' && (
+  <p style={{ color: '#15803d', fontWeight: 700 }}>
+    Publicidad aprobada. Tu anuncio ya está listo para mostrarse.
+  </p>
+)}
+
+{adStatus === 'SUBMITTED' && (
+  <p style={{ color: '#6d28d9', fontWeight: 700 }}>
+    Tu publicidad está en revisión.
+  </p>
+)}
+
     </div>
 ) : !quoteReady ? (
   <div>
