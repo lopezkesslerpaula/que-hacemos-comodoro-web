@@ -1,11 +1,33 @@
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
+import { cookies } from 'next/headers';
+import { createHash } from 'crypto';
+import { redirect } from 'next/navigation';
+
+async function verificarAdmin() {
+  const password = process.env.ADMIN_ACCESS_PASSWORD;
+
+  if (!password) {
+    throw new Error("ADMIN_ACCESS_PASSWORD no está configurada.");
+  }
+
+  const token = createHash("sha256")
+    .update(password)
+    .digest("hex");
+
+  const cookieStore = await cookies();
+
+  return cookieStore.get("qhc_admin_session")?.value === token;
+}
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SECRET_KEY!
 );
 export const dynamic = 'force-dynamic';
 export default async function AdminPublicidadesPage() {
+    if (!(await verificarAdmin())) {
+    redirect("/admin");
+  }
     const { data: requests, error } = await supabase
     .from('advertising_requests')
     .select('*')
