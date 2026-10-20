@@ -194,6 +194,9 @@ export default async function PublicidadDetallePage({
   </div>
 )}
           <p><strong>Estado:</strong> {request.status}</p>
+
+          {request.status === "PENDING" &&
+  request.payment_status === "NOT_REQUESTED" && (
           <form action={sendQuote} style={{ marginTop: 20 }}>
   <input type="hidden" name="id" value={request.id} />
 
@@ -276,7 +279,7 @@ export default async function PublicidadDetallePage({
     Enviar presupuesto
   </button>
 </form>
-
+)}
           
 {request.ad_status === "SUBMITTED" &&
   request.payment_status === "PAID" && (
