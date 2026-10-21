@@ -205,11 +205,11 @@ longitude: event.longitude,
   
 useEffect(() => {
   async function loadAdvertisements() {
-    const { data, error } = await supabase
-      .from("advertising_requests")
-      .select("id, business_name, ad_title, promotion_description, image_url, whatsapp, website_or_instagram")
-      .eq("ad_status", "APPROVED")
-      .eq("payment_status", "PAID");
+    
+const { data, error } = await supabase
+  .from('publicidades_visibles')
+  .select('id, business_name, ad_title, promotion_description, image_url, whatsapp, website_or_instagram');
+
 
     if (error) {
       console.error("Error cargando publicidades:", error);
