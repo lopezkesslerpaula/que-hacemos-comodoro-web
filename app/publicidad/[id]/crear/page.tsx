@@ -16,6 +16,26 @@ export default function CrearPublicidadPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
       const [sending, setSending] = useState(false);
   const [message, setMessage] = useState("");
+    
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+
+  function handleImageChange(file: File | null) {
+    setImageFile(file);
+    setPreviewImageUrl(null);
+    setShowPreview(false);
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewImageUrl(
+          typeof reader.result === "string" ? reader.result : null
+        );
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
 
   async function handleSubmit() {
     setSending(true);
@@ -204,7 +224,103 @@ onChange={(e) => setWebsite(e.target.value)}
       }}
     />
   </div>
-{message !== "Publicidad enviada para revisión." && (
+            
+<button
+  type="button"
+  onClick={() => {
+    if (!title.trim() || !description.trim() || !imageFile) {
+      setMessage("Completá el título, la descripción y seleccioná una imagen.");
+      return;
+    }
+    setMessage("");
+    setShowPreview(true);
+  }}
+  style={{
+    marginTop: 24,
+    marginRight: 10,
+    background: "#ffffff",
+    color: "#6d28d9",
+    border: "1px solid #6d28d9",
+    borderRadius: 10,
+    padding: "12px 18px",
+    fontWeight: 700,
+    cursor: "pointer",
+  }}
+>
+  Ver vista previa
+</button>
+
+
+{showPreview && (
+  <div
+    style={{
+      marginTop: 24,
+      padding: 20,
+      background: "#f8f5ff",
+      border: "1px solid #d5b5ff",
+      borderRadius: 14,
+    }}
+  >
+    <h2>Vista previa de tu publicidad</h2>
+    <p>Así se verá tu anuncio en la página principal.</p>
+
+    <div
+      style={{
+        maxWidth: 300,
+        minHeight: 150,
+        background: "#ffffff",
+        border: "1px solid #d5b5ff",
+        borderRadius: 18,
+        padding: 20,
+      }}
+    >
+      {previewImageUrl && (
+        <img
+          src={previewImageUrl}
+          alt={title}
+          style={{
+            width: "100%",
+            height: 190,
+            objectFit: "cover",
+            objectPosition: "center",
+            borderRadius: 10,
+            marginBottom: 12,
+          }}
+        />
+      )}
+
+      <span style={{ fontSize: 11, fontWeight: 900, color: "#7c3aed" }}>
+        PUBLICIDAD
+      </span>
+
+      <h3 style={{ margin: "8px 0 6px" }}>{title}</h3>
+
+      <p style={{ margin: 0, color: "#6b6475", fontSize: 14 }}>
+        {description}
+      </p>
+    </div>
+
+    <button
+      type="button"
+      onClick={() => setShowPreview(false)}
+      style={{
+        marginTop: 16,
+        padding: "12px 18px",
+        borderRadius: 10,
+        border: "1px solid #6d28d9",
+        background: "#ffffff",
+        color: "#6d28d9",
+        fontWeight: 700,
+        cursor: "pointer",
+      }}
+    >
+      Volver a editar
+    </button>
+  </div>
+)}
+
+{showPreview && message !== "Publicidad enviada para revisión." && (
+
   <button
     type="button"
     onClick={handleSubmit}
