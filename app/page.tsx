@@ -602,12 +602,16 @@ function handleNearbyEvents() {
             <img
               src={ad.image_url}
               alt={ad.business_name}
-              style={{
-                width: '100%',
-                height: 130,
-                objectFit: 'contain',
-                borderRadius: 10,
-                marginBottom: 12,
+             
+style={{
+  width: '100%',
+  height: 190,
+  objectFit: 'cover',
+  objectPosition: 'center',
+  borderRadius: 10,
+  marginBottom: 12,
+}}
+
               }}
             />
           )}
