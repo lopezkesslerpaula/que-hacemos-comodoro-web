@@ -644,27 +644,7 @@ function handleNearbyEvents() {
   );
 })}
 
-      >
-        <span
-          style={{
-            fontSize: 11,
-            fontWeight: 900,
-            color: '#7c3aed',
-          }}
-        >
-          ESPACIO PUBLICITARIO
-        </span>
-
-        <div>
-          <h3 style={{ margin: '8px 0 6px' }}>
-            Tu negocio puede estar acá
-          </h3>
-          <p style={{ margin: 0, color: '#6b6475', fontSize: 14 }}>
-            Mostrá tu negocio a personas de Comodoro Rivadavia.
-          </p>
-        </div>
-      </div>
-    ))}
+    
   </div>
 </section>
       <section className="section eventsSection" id="eventos">
