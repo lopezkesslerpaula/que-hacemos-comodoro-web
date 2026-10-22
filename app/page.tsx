@@ -577,20 +577,73 @@ function handleNearbyEvents() {
       gap: 14,
     }}
   >
-    {[1, 2, 3].map((slot) => (
-      <div
-        key={slot}
-        style={{
-          minHeight: 150,
-          border: '1px solid #e9d5ff',
-          borderRadius: 18,
-          background: '#ffffff',
-          padding: 20,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          boxShadow: '0 8px 24px rgba(109, 40, 217, 0.06)',
-        }}
+   
+{[0, 1, 2].map((slot) => {
+  const ad = advertisements[slot];
+
+  return (
+    <div
+      key={slot}
+      style={{
+        minHeight: 150,
+        border: '1px solid #d5b5ff',
+        borderRadius: 18,
+        background: '#ffffff',
+        padding: 20,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        boxShadow: '0 8px 24px rgba(109, 40, 217, 0.06)',
+      }}
+    >
+      {ad ? (
+        <>
+          {ad.image_url && (
+            <img
+              src={ad.image_url}
+              alt={ad.business_name}
+              style={{
+                width: '100%',
+                height: 130,
+                objectFit: 'contain',
+                borderRadius: 10,
+                marginBottom: 12,
+              }}
+            />
+          )}
+
+          <span style={{ fontSize: 11, fontWeight: 900, color: '#7c3aed' }}>
+            PUBLICIDAD
+          </span>
+
+          <h3 style={{ margin: '8px 0 6px' }}>
+            {ad.ad_title || ad.business_name}
+          </h3>
+
+          <p style={{ margin: 0, color: '#6b6475', fontSize: 14 }}>
+            {ad.promotion_description}
+          </p>
+        </>
+      ) : (
+        <>
+          <span style={{ fontSize: 11, fontWeight: 900, color: '#7c3aed' }}>
+            ESPACIO PUBLICITARIO
+          </span>
+
+          <div>
+            <h3 style={{ margin: '8px 0 6px' }}>
+              Tu negocio puede estar acá
+            </h3>
+            <p style={{ margin: 0, color: '#6b6475', fontSize: 14 }}>
+              Mostrá tu negocio a personas de Comodoro Rivadavia.
+            </p>
+          </div>
+        </>
+      )}
+    </div>
+  );
+})}
+
       >
         <span
           style={{
