@@ -13,6 +13,30 @@ export default function PubliciteAquiPage() {
   const [message, setMessage] = useState('');
     const [requestId, setRequestId] = useState<string | null>(null);
 const [user, setUser] = useState<any>(null);
+    
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+
+  function handleImageChange(file: File | null) {
+    setPreviewImageUrl(null);
+    setShowPreview(false);
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        setPreviewImageUrl(
+          typeof reader.result === "string" ? reader.result : null
+        );
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  const [previewBusinessName, setPreviewBusinessName] = useState("");
+  const [previewDescription, setPreviewDescription] = useState("");
+
 
     useEffect(() => {
   supabase.auth.getUser().then(({ data }) => {
@@ -21,6 +45,12 @@ const [user, setUser] = useState<any>(null);
 }, []);
       async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+          
+    if (!showPreview) {
+      setMessage("Primero revisá la vista previa antes de confirmar.");
+      return;
+    }
+
           if (!user) {
   setMessage('Tenés que iniciar sesión para solicitar publicidad.');
   return;
@@ -53,6 +83,10 @@ const [user, setUser] = useState<any>(null);
     }
 setRequestId(data.id);
     setMessage('¡Solicitud enviada correctamente!');
+          
+setShowPreview(false);
+setPreviewImageUrl(null);
+
     e.currentTarget.reset();
     setSending(false);
   }
@@ -118,6 +152,13 @@ setRequestId(data.id);
 
           <form
               onSubmit={handleSubmit}
+              
+onChange={() => {
+  if (showPreview) {
+    setShowPreview(false);
+  }
+}}
+
             style={{
               display: 'grid',
               gap: 16,
@@ -214,6 +255,9 @@ setRequestId(data.id);
                 type="file"
                 accept="image/*"
                 style={inputStyle}
+                  
+onChange={(e) => handleImageChange(e.target.files?.[0] ?? null)}
+
               />
             </label>
 
@@ -234,7 +278,20 @@ setRequestId(data.id);
             </div>
 
             <button
-              type="submit"
+              
+type="button"
+onClick={(e) => {
+  const form = e.currentTarget.closest("form");
+  if (!form || !form.reportValidity()) return;
+    
+const formData = new FormData(form);
+setPreviewBusinessName(String(formData.get("business_name") ?? ""));
+setPreviewDescription(String(formData.get("promotion_description") ?? ""));
+
+  setMessage("");
+  setShowPreview(true);
+}}
+
               style={{
                 border: 0,
                 borderRadius: 12,
@@ -246,8 +303,95 @@ setRequestId(data.id);
                 cursor: 'pointer',
               }}
             >
-              Solicitar publicidad
+              Ver vista previa
             </button>
+              
+{showPreview && (
+  <div
+    style={{
+      marginTop: 20,
+      padding: 20,
+      background: "#f8f5ff",
+      border: "1px solid #d5b5ff",
+      borderRadius: 14,
+    }}
+  >
+    <h2>Vista previa de tu publicidad</h2>
+    <p>Así podría verse tu anuncio en la página principal.</p>
+
+    <div
+      style={{
+        maxWidth: 300,
+        background: "#ffffff",
+        border: "1px solid #d5b5ff",
+        borderRadius: 18,
+        padding: 20,
+      }}
+    >
+      {previewImageUrl && (
+        <img
+          src={previewImageUrl}
+          alt={previewBusinessName}
+          style={{
+            width: "100%",
+            height: 190,
+            objectFit: "cover",
+            objectPosition: "center",
+            borderRadius: 10,
+            marginBottom: 12,
+          }}
+        />
+      )}
+
+      <span style={{ fontSize: 11, fontWeight: 900, color: "#7c3aed" }}>
+        PUBLICIDAD
+      </span>
+
+      <h3 style={{ margin: "8px 0 6px" }}>
+        {previewBusinessName}
+      </h3>
+
+      <p style={{ margin: 0, color: "#6b6475", fontSize: 14 }}>
+        {previewDescription}
+      </p>
+    </div>
+
+    <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+      <button
+        type="button"
+        onClick={() => setShowPreview(false)}
+        style={{
+          padding: "12px 18px",
+          borderRadius: 10,
+          border: "1px solid #6d28d9",
+          background: "#ffffff",
+          color: "#6d28d9",
+          fontWeight: 700,
+          cursor: "pointer",
+        }}
+      >
+        Volver a editar
+      </button>
+
+      <button
+        type="submit"
+        disabled={sending}
+        style={{
+          padding: "12px 18px",
+          borderRadius: 10,
+          border: "none",
+          background: "#6d28d9",
+          color: "#ffffff",
+          fontWeight: 700,
+          cursor: "pointer",
+        }}
+      >
+        {sending ? "Enviando..." : "Confirmar solicitud"}
+      </button>
+    </div>
+  </div>
+)}
+
               {message && (
   <p style={{ margin: 0, textAlign: 'center', fontWeight: 700 }}>
     {message}
