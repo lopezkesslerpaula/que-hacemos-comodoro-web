@@ -185,6 +185,40 @@ onChange={(e) => setDescription(e.target.value)}
   onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
 />
   </div>
+            
+<div style={{ marginTop: 18 }}>
+  <label
+    style={{
+      display: "block",
+      fontWeight: 700,
+      marginBottom: 10,
+    }}
+  >
+    ¿Cómo querés mostrar tu imagen?
+  </label>
+
+  <div style={{ display: "grid", gap: 10 }}>
+    <label>
+      <input
+        type="radio"
+        name="image_display"
+        value="logo"
+        defaultChecked
+      />
+      {" "}Logo completo (sin recortes)
+    </label>
+
+    <label>
+      <input
+        type="radio"
+        name="image_display"
+        value="photo"
+      />
+      {" "}Fotografía destacada (ocupa toda la tarjeta)
+    </label>
+  </div>
+</div>
+
 
   <div style={{ marginTop: 18 }}>
     <label style={{ display: "block", fontWeight: 700, marginBottom: 6 }}>
