@@ -5,6 +5,8 @@ import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { createHash } from "crypto";
 
+import ConfirmarEliminar from "./ConfirmarEliminar";
+
 function getAdminToken() {
   const password = process.env.ADMIN_ACCESS_PASSWORD;
   if (!password) {
@@ -105,24 +107,12 @@ export default async function AdministrarEventos() {
 
               
 
-<form action={deleteEvent}>
+<ConfirmarEliminar
+  eventId={String(event.id)}
+  deleteAction={deleteEvent}
+/>
 
 
-                <input type="hidden" name="eventId" value={event.id} />
-                <button
-                  type="submit"
-                  style={{
-                    background: "#dc2626",
-                    color: "white",
-                    padding: "10px 16px",
-                    border: "none",
-                    borderRadius: 8,
-                    cursor: "pointer",
-                  }}
-                >
-                  Eliminar evento
-                </button>
-              </form>
             </div>
           ))}
         </div>
