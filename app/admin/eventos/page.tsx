@@ -70,10 +70,11 @@ export default async function AdministrarEventos() {
     }
   );
 
-  const { data: events, error } = await supabase
+
     .from("events")
-    .select("id, title, status, starts_at")
-    .order("starts_at", { ascending: false });
+    .select("*");
+
+   
 
   if (error) {
     throw new Error("No se pudieron cargar los eventos: " + error.message);
@@ -102,7 +103,9 @@ export default async function AdministrarEventos() {
               }}
             >
               <h3>{event.title}</h3>
-              <p>Fecha: {event.starts_at ? new Date(event.starts_at).toLocaleString("es-AR") : "Sin fecha"}</p>
+              
+<p>Fecha: pendiente de mostrar</p>
+
               <p>Estado: {event.status}</p>
 
               
