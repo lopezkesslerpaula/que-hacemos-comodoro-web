@@ -144,6 +144,23 @@ export default async function AdminPage({
     Solicitudes de publicidad
   </Link>
 </div>
+     
+<Link
+  href="/admin/eventos"
+  style={{
+    display: "inline-block",
+    background: "#ede9fe",
+    color: "#5b21b6",
+    padding: "12px 18px",
+    borderRadius: 10,
+    fontWeight: 800,
+    textDecoration: "none",
+    marginBottom: 20,
+  }}
+>
+  Administrar eventos
+</Link>
+   
           <section
             style={{
               background: '#fff',
