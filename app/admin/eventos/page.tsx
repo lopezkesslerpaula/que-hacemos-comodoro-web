@@ -71,8 +71,10 @@ export default async function AdministrarEventos() {
   );
 
 
+  const { data: events, error } = await supabase
     .from("events")
     .select("*");
+
 
    
 
