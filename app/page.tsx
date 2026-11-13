@@ -523,7 +523,7 @@ function handleNearbyEvents() {
         </div>
       </section>
 
-
+{false && (
       <section
   style={{
     maxWidth: 1180,
@@ -651,6 +651,7 @@ style={{
     
   </div>
 </section>
+  )}
       <section className="section eventsSection" id="eventos">
         <div className="sectionHeading eventsHeading">
           <div><span className="sectionKicker">PRÓXIMOS PLANES</span><h2>Eventos para vos</h2></div>
