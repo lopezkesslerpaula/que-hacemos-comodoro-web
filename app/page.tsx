@@ -103,6 +103,12 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [favorites, setFavorites] = useState<string[]>([]);
 const [publishedEvents, setPublishedEvents] = useState<EventItem[]>([]);
+  const [eventView, setEventView] = useState<'upcoming' | 'past'>('upcoming');
+  const [today, setToday] = useState(() =>
+  new Date().toLocaleDateString('en-CA', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+  })
+);
 const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [nearbyOnly, setNearbyOnly] = useState(false);
@@ -118,6 +124,19 @@ const [advertisements, setAdvertisements] = useState<{
   website_or_instagram: string | null;
 }[]>([]);
 const [userLongitude, setUserLongitude] = useState<number | null>(null);
+  useEffect(() => {
+  const updateToday = () => {
+    setToday(
+      new Date().toLocaleDateString('en-CA', {
+        timeZone: 'America/Argentina/Buenos_Aires',
+      })
+    );
+  };
+
+  const interval = setInterval(updateToday, 60000);
+
+  return () => clearInterval(interval);
+}, []);
   useEffect(() => {
   async function checkSession() {
     const {
@@ -224,8 +243,11 @@ const { data, error } = await supabase
 
  const visibleEvents = useMemo(() => {
   const normalized = query.trim().toLocaleLowerCase('es');
+   
 
   const filteredEvents = publishedEvents.filter((event) => {
+    const matchesDate =
+  eventView === 'upcoming' ? event.date >= today : event.date < today;
     const matchesCategory =
       activeCategory === 'Todos' || event.category === activeCategory;
 
@@ -265,7 +287,7 @@ const { data, error } = await supabase
       }
     }
 
-    return matchesCategory && matchesSearch && matchesNearby;
+    return matchesDate && matchesCategory && matchesSearch && matchesNearby;
   });
    if (
   nearbyOnly &&
@@ -310,6 +332,8 @@ return filteredEvents;
   nearbyOnly,
   userLatitude,
   userLongitude,
+   eventView,
+today,
 ]);
 
  async function toggleFavorite(id: string) {
@@ -671,7 +695,45 @@ style={{
   📍 {nearbyOnly ? 'Mostrando cerca de mí' : 'Cerca de mí'}
 </button> 
         </div>
+<div style={{
+  display: 'flex',
+  gap: 10,
+  margin: '16px 0',
+}}>
+  <button
+    type="button"
+    onClick={() => setEventView('upcoming')}
+    style={{
+      flex: 1,
+      padding: '12px',
+      borderRadius: 12,
+      border: '1px solid #7c3aed',
+      background: eventView === 'upcoming' ? '#7c3aed' : '#ffffff',
+      color: eventView === 'upcoming' ? '#ffffff' : '#7c3aed',
+      fontWeight: 700,
+      cursor: 'pointer',
+    }}
+  >
+    Próximos eventos
+  </button>
 
+  <button
+    type="button"
+    onClick={() => setEventView('past')}
+    style={{
+      flex: 1,
+      padding: '12px',
+      borderRadius: 12,
+      border: '1px solid #7c3aed',
+      background: eventView === 'past' ? '#7c3aed' : '#ffffff',
+      color: eventView === 'past' ? '#ffffff' : '#7c3aed',
+      fontWeight: 700,
+      cursor: 'pointer',
+    }}
+  >
+    Eventos anteriores
+  </button>
+</div>
         {visibleEvents.length ? (
           <div className="eventGrid">
             {visibleEvents.map((event) => (
@@ -718,7 +780,13 @@ style={{
           </div>
         ) : (
           <div className="emptyState">
-            <h3>{nearbyOnly ? '📍 No hay eventos cerca de tu ubicación por ahora' : '🔎 No encontramos eventos con ese filtro'}</h3>
+           <h3>
+  {eventView === 'past'
+    ? 'Todavía no hay eventos anteriores para mostrar.'
+    : nearbyOnly
+      ? '📍 No hay eventos cerca de tu ubicación por ahora'
+      : '🔎 No encontramos eventos con ese filtro'}
+</h3>
             <p>{nearbyOnly ? 'Probá ver todos los eventos de Comodoro.' : 'Probá otra búsqueda o volvé a ver todos los planes.'}</p>
             <button type="button" onClick={() => { setQuery(''); setActiveCategory('Todos'); setNearbyOnly(false); setUserLatitude(null); setUserLongitude(null); }}>Ver todos los eventos</button>
           </div>
