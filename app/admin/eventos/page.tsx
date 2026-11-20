@@ -95,27 +95,49 @@ export default async function AdministrarEventos() {
       ) : (
         <div style={{ display: "grid", gap: 12, marginTop: 25 }}>
           {events.map((event) => (
-            <div
-              key={event.id}
-              style={{
-                background: "white",
-                padding: 18,
-                borderRadius: 12,
-                border: "1px solid #ddd6fe",
-              }}
-            >
-              <h3>{event.title}</h3>
-              
-<p>Fecha: pendiente de mostrar</p>
+      
+              <div
+                key={event.id}
+                style={{
+                  background: 'white',
+                  padding: 16,
+                  borderRadius: 12,
+                  border: '1px solid #ddd',
+                  display: 'grid',
+                  gap: 10,
+                }}
+              >
+                {event.cover_image_url && (
+                  <img
+                    src={event.cover_image_url}
+                    alt={event.title}
+                    style={{
+                      width: '100%',
+                      maxHeight: 260,
+                      objectFit: 'contain',
+                      borderRadius: 10,
+                      background: '#f5f5f5',
+                    }}
+                  />
+                )}
 
-              <p>Estado: {event.status}</p>
+                <h3 style={{ margin: 0 }}>{event.title}</h3>
 
-              
+                <p><strong>Categoría:</strong> {event.category || 'Sin categoría'}</p>
+                <p><strong>Fecha:</strong> {event.event_date ? new Date(event.event_date + 'T00:00:00').toLocaleDateString('es-AR') : 'Sin fecha'}</p>
+                <p><strong>Horario:</strong> {event.event_time || 'Sin horario'}</p>
+                <p><strong>Lugar:</strong> {event.place || 'Sin lugar'}</p>
+                <p><strong>Dirección:</strong> {event.address || 'Sin dirección'}</p>
+                <p><strong>Entrada:</strong> {event.entry_type || 'No especificada'}</p>
+                <p><strong>Precio:</strong> {event.price || 'No especificado'}</p>
+                <p><strong>Estado:</strong> {event.status}</p>
 
-<ConfirmarEliminar
-  eventId={String(event.id)}
-  deleteAction={deleteEvent}
-/>
+                <ConfirmarEliminar
+                  eventId={String(event.id)}
+                  deleteAction={deleteEvent}
+                />
+              </div>
+
 
 
             </div>
