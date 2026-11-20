@@ -140,7 +140,7 @@ export default async function AdministrarEventos() {
 
 
 
-            </div>
+          
           ))}
         </div>
       )}
