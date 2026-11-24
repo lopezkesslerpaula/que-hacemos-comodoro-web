@@ -144,3 +144,5 @@ footer p { margin: 0; }
   .publishBanner a { width: 100%; text-align: center; }
   footer { padding: 28px 16px; grid-template-columns: 1fr; }
 }
+  .dateRow { font-size: 15px; }
+  .dateRow span:first-child { color: var(--purple); font-size: 17px; font-weight: 800; }
