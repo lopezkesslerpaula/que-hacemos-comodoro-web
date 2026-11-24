@@ -112,6 +112,8 @@ const [publishedEvents, setPublishedEvents] = useState<EventItem[]>([]);
 const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [nearbyOnly, setNearbyOnly] = useState(false);
+  const [todayOnly, setTodayOnly] = useState(false);
+const [freeOnly, setFreeOnly] = useState(false);
 const [userLatitude, setUserLatitude] = useState<number | null>(null);
 
 const [advertisements, setAdvertisements] = useState<{
@@ -248,6 +250,8 @@ const { data, error } = await supabase
   const filteredEvents = publishedEvents.filter((event) => {
     const matchesDate =
   eventView === 'upcoming' ? event.date >= today : event.date < today;
+    const matchesToday = !todayOnly || event.date === today;
+const matchesFree = !freeOnly || event.price === 'Gratis';
     const matchesCategory =
       activeCategory === 'Todos' || event.category === activeCategory;
 
@@ -287,7 +291,7 @@ const { data, error } = await supabase
       }
     }
 
-    return matchesDate && matchesCategory && matchesSearch && matchesNearby;
+    return matchesDate && matchesToday && matchesFree && matchesCategory && matchesSearch && matchesNearby;
   });
    if (
   nearbyOnly &&
@@ -334,6 +338,8 @@ return filteredEvents;
   userLongitude,
    eventView,
 today,
+   todayOnly,
+freeOnly,
 ]);
 
  async function toggleFavorite(id: string) {
@@ -694,6 +700,39 @@ style={{
 >
   📍 {nearbyOnly ? 'Mostrando cerca de mí' : 'Cerca de mí'}
 </button> 
+          
+          <button
+            type="button"
+            onClick={() => setTodayOnly(!todayOnly)}
+            style={{
+              border: todayOnly ? '2px solid #7c3aed' : '1px solid #d8ccf5',
+              background: todayOnly ? '#7c3aed' : '#ffffff',
+              color: todayOnly ? '#ffffff' : '#6d28d9',
+              borderRadius: 999,
+              padding: '10px 16px',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            📅 Hoy
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setFreeOnly(!freeOnly)}
+            style={{
+              border: freeOnly ? '2px solid #7c3aed' : '1px solid #d8ccf5',
+              background: freeOnly ? '#7c3aed' : '#ffffff',
+              color: freeOnly ? '#ffffff' : '#6d28d9',
+              borderRadius: 999,
+              padding: '10px 16px',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            💜 Gratis
+          </button>
+
         </div>
 <div style={{
   display: 'flex',
