@@ -117,9 +117,11 @@ footer p { margin: 0; }
   .hero { padding: 20px 16px 20px; }
   .hero h1 { font-size: clamp(34px, 9vw, 44px); line-height: 1.05; }
   .heroContent > p { font-size: 15px; margin: 10px auto 0; }
-  .searchBox { margin-top: 18px; padding: 8px; }
-  .searchBox input { min-height: 42px; }
-  .searchBox a { width: 100%; text-align: center; }
+  
+  .searchBox { margin-top: 12px; padding: 6px; display: flex; align-items: center; gap: 6px; }
+  .searchBox input { min-height: 38px; min-width: 0; flex: 1; font-size: 13px; }
+  .searchBox a { width: auto; flex-shrink: 0; padding: 10px 12px; font-size: 12px; text-align: center; }
+
   .quickStats { display: none; }
   .heroVisual { min-height: 0; }
   .heroCard { min-height: 0; }
