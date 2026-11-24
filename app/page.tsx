@@ -518,20 +518,7 @@ function handleNearbyEvents() {
             <span><b>10</b> categorías</span>
             <span><b>1</b> ciudad, todo en un lugar</span>
           </div>
-        </div>
-        <div className="heroVisual" aria-label="Eventos destacados de ejemplo">
-          <div className="heroCard heroCardMain">
-            <span className="floatingTag">DESTACADO</span>
-            <div className="visualEmoji">🎶</div>
-            <div>
-              <small>VIERNES · 21:00</small>
-              <h2>Festival de música en vivo</h2>
-              <p>Centro Cultural · Comodoro Rivadavia</p>
-            </div>
-          </div>
-          <div className="miniCard miniOne"><span>🎭</span><b>Teatro</b><small>Sábado</small></div>
-          <div className="miniCard miniTwo"><span>🛍️</span><b>Feria</b><small>Este finde</small></div>
-        </div>
+       
       </section>
 
       <section className="section" id="categorias">
