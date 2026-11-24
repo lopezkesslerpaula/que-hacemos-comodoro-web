@@ -190,7 +190,8 @@ useEffect(() => {
       .from('events')
       .select('*')
       .eq('status', 'PUBLISHED')
-      .order('event_date', { ascending: true });
+      .order('event_date', { ascending: true })
+.order('event_time', { ascending: true });
 
     if (error) {
       console.error('Error cargando eventos publicados:', error);
@@ -790,7 +791,10 @@ style={{
                   >{favorites.includes(event.id) ? '♥' : '♡'}</button>
                 </div>
                 <div className="eventBody">
-                  <div className="dateRow"><b>{event.date}</b><span>{event.time}</span></div>
+                  <div className="dateRow">
+  <b>{event.date.split('-').reverse().join('/')}</b>
+  <span>{event.time}</span>
+</div>
                   <h3>{event.title}</h3>
                   <p>📍 {event.place}</p>
                   {nearbyOnly && getDistanceText(event) && (
