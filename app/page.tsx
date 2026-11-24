@@ -518,7 +518,7 @@ function handleNearbyEvents() {
             <span><b>10</b> categorías</span>
             <span><b>1</b> ciudad, todo en un lugar</span>
           </div>
-       
+       </div>
       </section>
 
       <section className="section" id="categorias">
