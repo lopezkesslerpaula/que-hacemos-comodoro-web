@@ -71,10 +71,11 @@ export default async function AdministrarEventos() {
   );
 
 
-  const { data: events, error } = await supabase
-    .from("events")
-    .select("*");
-
+ const { data: events, error } = await supabase
+  .from("events")
+  .select("*")
+  .order("event_date", { ascending: true })
+  .order("event_time", { ascending: true });
 
    
 
