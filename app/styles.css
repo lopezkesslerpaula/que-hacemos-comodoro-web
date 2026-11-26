@@ -112,7 +112,7 @@ footer p { margin: 0; }
   .topbar { min-height: 66px; padding: 0 16px; }
   .brand > span:last-child { font-size: 13px; }
   .brand > span:last-child b { display: none; }
-  .nav a { display: none; }
+  
  
   .hero { padding: 20px 16px 20px; }
   .hero h1 { font-size: clamp(34px, 9vw, 44px); line-height: 1.05; }
