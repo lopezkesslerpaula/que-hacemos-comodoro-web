@@ -118,6 +118,7 @@ export default async function AdministrarEventos({
 
       <p>Desde aquí podés eliminar eventos de prueba o repetidos.</p>
 <p>Diagnóstico: {events?.length ?? 0} eventos recibidos desde Supabase.</p>
+      <p>Diagnóstico: {filteredEvents.length} eventos después de aplicar los filtros.</p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, margin: '20px 0' }}>
         <Link href="/admin/eventos?vista=proximos" style={{ padding: '10px 14px', borderRadius: 10, background: vista === 'proximos' ? '#7138ce' : '#eee', color: vista === 'proximos' ? 'white' : '#333' }}>
           Próximos
