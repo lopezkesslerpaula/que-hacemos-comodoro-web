@@ -145,7 +145,7 @@ export default async function AdministrarEventos({
         </button>
       </form>
 
-      {filteredEvents.length ? (
+    {!filteredEvents.length ? (
         <p>No hay eventos registrados.</p>
       ) : (
         <div style={{ display: "grid", gap: 12, marginTop: 25 }}>
